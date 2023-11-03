@@ -11,7 +11,17 @@ class LeadController extends Controller
         // Get the list of countries from an array or a database table
         $provinces = ['USA', 'UK', 'Canada', 'Australia', 'India', 'China', 'Japan'];
         // Return the view with the countries data
-        return view('welcome', ['provinces' => $provinces]);
+
+        // Todo: Get data from database table
+        $filter = [
+            'city' => [''],
+            'ability' => [''],
+            'experience' => [''],
+            'position' => [''],
+            'english' => [''],
+            'salary' => ['']
+        ];
+        return view('lead.filter', ['filter' => $filter]);
     }
 
     // Store the form data in the database

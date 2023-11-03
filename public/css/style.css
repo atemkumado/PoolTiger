@@ -3,22 +3,31 @@
     margin: 0;
     padding: 0;
 }
-
 .container {
-    max-width: 600px;
-    margin: 20px auto;
+    width: 100%;
+}
+.container-image {
+    background-repeat: no-repeat;
+    background-size: cover;
+    object-fit: cover;
+}
+
+.container-filter {
+    background-color: white;
     padding: 20px;
-    border: 1px solid #ccc;
+    font-size: small;
 }
 
 .form-group {
     margin-bottom: 10px;
+    padding-right: 20px;
 }
 
 .form-label {
     display: block;
     font-weight: bold;
     margin-bottom: 5px;
+    font-size: small;
 }
 
 .form-input {
@@ -27,7 +36,6 @@
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 16px;
 }
 
 .form-select {
@@ -36,39 +44,39 @@
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 16px;
     appearance: none;
 }
 
 .form-button {
     display: block;
-    width: 100%;
+    width: 15%;
     padding: 10px;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color: #e87c4a;
     color: white;
-    font-size: 16px;
     cursor: pointer;
+    margin-left: auto;
+    margin-right: 10px;
 }
 
 .form-button:hover {
-    background-color: #0069d9;
-}
+    background-color: #c65f33;
 
-.form-error {
-    color: red;
-    font-weight: bold;
-}
+    .form-error {
+        color: red;
+        font-weight: bold;
+    }
 
-.form-success {
-    color: green;
-    font-weight: bold;
-}
+    .form-success {
+        color: green;
+        font-weight: bold;
+    }
 
-/* Add some media queries for responsiveness */
-@media (max-width: 480px) {
-    .container {
-        width: 90%;
+    /* Add some media queries for responsiveness */
+    @media (max-width: 480px) {
+        .container {
+            width: 90%;
+        }
     }
 }
