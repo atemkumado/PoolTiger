@@ -3,7 +3,7 @@
 @section('content')
         <div class="content">
             <div class="row">
-                <div class="container-filter col-6">
+                <div class="container-filter col-4">
                     <h4>Search by:</h4>
                     <!-- Display the success message if any -->
                     @if (session('success'))
