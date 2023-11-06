@@ -1,7 +1,7 @@
 @extends('index')
 
 @section('content')
-        <div class="container">
+        <div class="content">
             <div class="row">
                 <div class="container-filter col-6">
                     <h4>Search by:</h4>
@@ -71,8 +71,7 @@
                     <button class="form-button" ><i class="fa fa-search"></i></button>
                     {!! Form::close() !!}
                 </div>
-                <img class="container-image col-6" src="{{ asset('images/Talent Pool visual.jpg') }}" alt="Image Content">
-                    
+
             </div>
         </div>
        
