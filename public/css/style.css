@@ -3,19 +3,71 @@
     margin: 0;
     padding: 0;
 }
-.container {
+/* General styles for the header element */
+header {
     width: 100%;
-}
-.container-image {
-    background-repeat: no-repeat;
+    }
+    
+    /* General styles for the nav element */
+    nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 90%;
+    height: 100%;
+    margin: 0 auto;
+    }
+    
+    /* Styles for the logo element */
+    .logo {
+    width: 200px;
+    height: 60px;
+    margin-left: auto;
+    }
+    
+    /* Styles for the menu element */
+    .menu {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin: 10px;
+    }
+    .menu-location{
+        margin-right: 5px;
+    }
+    .menu-statistic{
+        color:#c43e1c;
+    }
+    /* Styles for the avatar element */
+    .avatar {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    border-radius: 50%;
+    background-image: url("{{ asset('images/avatar.jpg') }}");
     background-size: cover;
-    object-fit: cover;
+    }
+    
+    /* Styles for the item element */
+
+.content {
+    background-image: url('Talent Pool visual.jpg');
+    background-repeat: no-repeat;
+  
+    background-position: right center;
+    width: 100%;
+    height: 100%;
+    border: #e4906e 2px solid;
+    border-left: none;
+    border-right: none;
+   
 }
 
 .container-filter {
     background-color: white;
     padding: 20px;
     font-size: small;
+    margin-left: 100px;
 }
 
 .form-group {
