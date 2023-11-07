@@ -22,7 +22,7 @@
                         </div>
                     @endif
                     <!-- Create the form using Laravel collective -->
-                    {!! Form::open(['route' => 'lead.filter', 'method' => 'post', 'class' => 'form-horizontal']) !!}
+                    {!! Form::open(['route' => 'lead.list', 'method' => 'get', 'class' => 'form-horizontal']) !!}
         
                     <div class="form-group row">
                         {!! Form::label('city', 'City', ['class' => 'col-4 form-label']) !!}
