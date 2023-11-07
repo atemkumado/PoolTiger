@@ -15,9 +15,6 @@ use App\Http\Controllers\ProfileController;
 |
 */
 
-Route::get('/', [LeadController::class, 'index'])
-->name('lead.filter');
-
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -29,4 +26,4 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
-require __DIR__.'/lead.php';
+require __DIR__.'/lead/filter.php';

@@ -1,3 +1,5 @@
+@import url("lead/list.css");
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -39,7 +41,7 @@
 }
 
 .content {
-    background-image: url("Talent Pool visual.jpg");
+    /* background-image: url("Talent Pool visual.jpg"); */
     background-repeat: no-repeat;
     background-size: 50% 100%;
     background-position: right center;
@@ -54,7 +56,7 @@
     background-color: white;
     padding: 20px;
     font-size: small;
-    margin-left: 100px;
+    padding-left: 100px;
 }
 
 .form-group {
@@ -120,3 +122,16 @@
         }
     }
 }
+.container-list {
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    margin-left: 50px;
+}
+.list-title{
+    margin-bottom: 10px;
+    display: flex;
+}
+/* .list-unstyled{
+    display: block;
+} */
