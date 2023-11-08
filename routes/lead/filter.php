@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LeadController::class, 'index'])
 ->name('lead.filter');
-Route::get('filter', [LeadController::class, 'list'])
+Route::get('filter', [LeadController::class, 'getList'])
 ->name('lead.list');
+Route::get('profile', [LeadController::class, 'getProfile'])
+->name('lead.profile');
 

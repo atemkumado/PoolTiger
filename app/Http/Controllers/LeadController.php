@@ -24,7 +24,7 @@ class LeadController extends Controller
     }
 
     // Store the form data in the database
-    public function list(Request $request)
+    public function getList(Request $request)
     {
         // Validate the request data
         // $request->validate([
@@ -56,5 +56,9 @@ class LeadController extends Controller
 
         // Redirect to the form view with a success message
         return view('lead.list', ['filter' => $filter, 'input' => $input]);
+    }
+
+    public function getProfile(){
+        return view('lead.profile');
     }
 }
