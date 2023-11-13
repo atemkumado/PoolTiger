@@ -16,6 +16,17 @@
     color: white;
     cursor: pointer;
     margin: auto 10px;
+    display: table;
+}
+.talent-btn  i{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    text-decoration: none;
+}
+.talent-btn  i:hover{
+    color:white;
+    text-decoration: underline !important;
 }
 .talent-btn:hover{
     background-color: #c65f33;

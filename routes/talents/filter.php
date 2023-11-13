@@ -16,9 +16,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [LeadController::class, 'index'])
-->name('lead.filter');
+->name('talents.filter');
 Route::get('filter', [LeadController::class, 'getList'])
-->name('lead.list');
+->name('talents.list');
 Route::get('profile', [LeadController::class, 'getProfile'])
-->name('lead.profile');
+->name('talents.profile');
 

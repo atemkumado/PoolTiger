@@ -1,5 +1,5 @@
-@import url("lead/list.css");
-@import url("lead/profile.css");
+@import url("talents/list.css");
+@import url("talents/profile.css");
 
 * {
     box-sizing: border-box;
