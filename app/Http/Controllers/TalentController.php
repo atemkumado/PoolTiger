@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Leads;
+use App\Models\Province;
+use App\Models\Talent;
 use Illuminate\Http\Request;
 
 class LeadController extends Controller
@@ -15,7 +16,7 @@ class LeadController extends Controller
         // Return the view with the countries data
 
         // Todo: Get data from database table
-    
+
         $filter = [
             'city' => self::PROVINCE,
             'ability' => self::ABILITY,
@@ -47,7 +48,7 @@ class LeadController extends Controller
             'salary' => ['']
         ];
 
-        $input = new Leads();
+        $input = new Talent();
         // Assign the request data to the user attributes
         $input->city = $request->city ?? '';
         $input->ability = $request->ability ?? '';
@@ -63,6 +64,7 @@ class LeadController extends Controller
     }
 
     public function getProfile(){
+        $province = Province::pluck('name')->toArray();
         return view('talents.profile');
     }
 }
