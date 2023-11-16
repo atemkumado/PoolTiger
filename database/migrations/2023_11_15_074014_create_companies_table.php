@@ -11,26 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('talents', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) { 
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->string('phone')->unique();
-            $table->unsignedBigInteger('position_id')->nullable();
-            $table->unsignedBigInteger('skill_id')->nullable();
-            $table->integer('english');
+            $table->string('experience');
+            $table->string('salary');
+            $table->string('expect');
+            $table->string('notices');
+            $table->string('name');
             $table->unsignedBigInteger('province_id')->nullable();
             $table->unsignedBigInteger('district_id')->nullable();
             $table->unsignedBigInteger('ward_id')->nullable();
             $table->timestamps();
 
             // relationships
-            $table->foreign('position_id')->references('id')->on('positions');
-            $table->foreign('skill_id')->references('id')->on('skills');
             $table->foreign('province_id')->references('id')->on('provinces');
             $table->foreign('district_id')->references('id')->on('districts');
             $table->foreign('ward_id')->references('id')->on('wards');
-
         });
     }
 
@@ -39,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('talents');
+        Schema::dropIfExists('companies');
     }
 };

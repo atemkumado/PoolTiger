@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\LeadController;
+use App\Http\Controllers\TalentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,10 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [LeadController::class, 'index'])
+Route::get('/', [TalentController::class, 'index'])
 ->name('talents.filter');
-Route::get('filter', [LeadController::class, 'getList'])
+Route::get('filter', [TalentController::class, 'getList'])
 ->name('talents.list');
-Route::get('profile', [LeadController::class, 'getProfile'])
+Route::get('profile', [TalentController::class, 'getProfile'])
 ->name('talents.profile');
 

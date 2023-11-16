@@ -2,20 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\Location\District;
-use App\Models\Location\Province;
-use App\Models\Location\Ward;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Talent extends Model
+class Company extends Model
 {
     use HasFactory;
-
-    public function skill()
-    {
-        return $this->belongsToMany(Skill::class);
-    }
 
     public function province()
     {
@@ -33,15 +25,19 @@ class Talent extends Model
     {
         return $this->belongsTo(Ward::class);
     }
-    
+
+    public function talent()
+    {
+        return $this->belongsTo(Ward::class);
+    }
 
     protected static function boot()
     {
         parent::boot();
 
-        static::deleting(function ($talent) {
+        static::deleting(function ($company) {
             // do some extra stuff before deleting
-           
+           $company->talent()->detach();
         });
     }
 }
