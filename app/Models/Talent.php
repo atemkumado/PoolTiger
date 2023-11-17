@@ -2,19 +2,20 @@
 
 namespace App\Models;
 
+use App\Models\Location\Ward;
 use App\Models\Location\District;
 use App\Models\Location\Province;
-use App\Models\Location\Ward;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Talent extends Model
 {
     use HasFactory;
     protected $table = 'talents';
-    public function skill()
+    public function skill(): BelongsToMany
     {
-        return $this->belongsToMany(Skill::class);
+        return $this->belongsToMany(Skill::class, 'talent_skill');
     }
 
     public function province()

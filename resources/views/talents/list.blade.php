@@ -25,8 +25,8 @@
                 {!! Form::open(['route' => 'talents.list', 'method' => 'get', 'class' => 'form-horizontal']) !!}
 
                 <div class="form-group row">
-                    {!! Form::label('city', 'City', ['class' => 'col-4 form-label']) !!}
-                    {!! Form::select('city', $filter['city'], $input['city'], [
+                    {!! Form::label('province', 'City', ['class' => 'col-4 form-label']) !!}
+                    {!! Form::select('province', $filter['province'], $input['province'], [
                         'class' => 'form-select col-8',
                         'placeholder' => 'Select an option',
                     ]) !!}

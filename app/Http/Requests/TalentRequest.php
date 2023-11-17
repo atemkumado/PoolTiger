@@ -15,7 +15,7 @@ class TalentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'city' => ['required'],
+            'province' => ['required'],
             'skill' => ['required'],
         ];
     }
