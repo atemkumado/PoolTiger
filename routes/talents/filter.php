@@ -14,11 +14,12 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::middleware('auth')->group(function(){
+    Route::get('/', [TalentController::class, 'index'])
+    ->name('talents.filter');
+    Route::get('filter', [TalentController::class, 'list'])
+    ->name('talents.list');
+    Route::get('/detail', [TalentController::class, 'detail'])
+    ->name('talents.detail');
 
-Route::get('/', [TalentController::class, 'index'])
-->name('talents.filter');
-Route::get('filter', [TalentController::class, 'getList'])
-->name('talents.list');
-Route::get('profile', [TalentController::class, 'getProfile'])
-->name('talents.profile');
-
+});

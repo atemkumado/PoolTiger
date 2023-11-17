@@ -2,28 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Talent;
-use App\Models\Location\Province;
 use Illuminate\Http\Request;
 use Psy\Readline\Hoa\Console;
+use App\Models\Location\Province;
+use App\Http\Requests\TalentRequest;
 
 class TalentController extends Controller
 {
-    const ABILITY = ["PHP", "Java", "C#", "JS", "NodeJs", "C++"];
+    const skill = ["PHP", "Java", "C#", "JS", "NodeJs", "C++"];
     protected $provinces;
     public function __construct()
     {
-        $this->provinces = Province::pluck("name")->toArray();
+        $this->provinces = Province::pluck('name','id');
     }
 
     public function index()
     {
         // Return the view with the countries data
-
+        // dd($this->provinces);
         // Todo: Get data from database table
         $filter = [
             'city' => $this->provinces,
-            'ability' => self::ABILITY,
+            'skill' => self::skill,
             'experience' => [''],
             'position' => [''],
             'english' => [''],
@@ -33,19 +35,14 @@ class TalentController extends Controller
     }
 
     // Store the form data in the database
-    public function getList(Request $request)
+    public function list(TalentRequest $request)
     {
         // Validate the request data
-        // $request->validate([
-        //     'name' => 'required|max:255',
-        //     'email' => 'required|email|unique:users',
-        //     'province' => 'required',
-        // ]);
-
+        // dd($request->input("city"));
         // Create a new user instance
         $filter = [
             'city' => $this->provinces,
-            'ability' => self::ABILITY,
+            'skill' => self::skill,
             'experience' => [''],
             'position' => [''],
             'english' => [''],
@@ -53,21 +50,22 @@ class TalentController extends Controller
         ];
 
         $input = new Talent();
+        dd(Talent::where('province_id',$request->city)->where('english',5)->get()->toArray());
         // Assign the request data to the user attributes
         $input->city = $request->city ?? '';
-        $input->ability = $request->ability ?? '';
-        $input->yoe = $request->yoe ?? '';
+        $input->skill = $request->skill ?? '';
+        $input->year = $request->year ?? '';
         $input->position = $request->position ?? '';
         $input->salary = $request->salary ?? '';
         // Save the user in the database
 
 
         // Redirect to the form view with a success message
-        return view('talents.list', ['filter' => $filter, 'input' => $input]);
+        return view('talents.list', ['filter' => $filter, 'input' => $request]);
     }
 
-    public function getProfile()
+    public function detail()
     {
-        return view('talents.profile');
+        return view('talents.detail');
     }
 }

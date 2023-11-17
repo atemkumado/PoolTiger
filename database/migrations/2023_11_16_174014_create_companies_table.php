@@ -11,26 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('talents', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) { 
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->string('phone')->unique();
-            $table->unsignedBigInteger('position_id')->nullable();
-            $table->unsignedBigInteger('skill_id')->nullable();
-            $table->integer('english');
-            $table->unsignedBigInteger('province_id')->nullable();
-            $table->unsignedBigInteger('district_id')->nullable();
-            $table->unsignedBigInteger('ward_id')->nullable();
+            $table->integer('experience');
+            $table->integer('salary');
+            $table->integer('expect');
+            $table->text('notices');
+            $table->unsignedBigInteger('talent_id')->nullable();
+            $table->bigInteger('province_id')->nullable();
+            $table->bigInteger('district_id')->nullable();
+            $table->bigInteger('ward_id')->nullable();
             $table->timestamps();
 
             // relationships
-            $table->foreign('position_id')->references('id')->on('positions');
-            $table->foreign('skill_id')->references('id')->on('skills');
+            $table->foreign('talent_id')->references('id')->on('talents')->onDelete('cascade');
             $table->foreign('province_id')->references('id')->on('provinces');
             $table->foreign('district_id')->references('id')->on('districts');
             $table->foreign('ward_id')->references('id')->on('wards');
-
         });
     }
 
@@ -39,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('talents');
+        Schema::dropIfExists('companies');
     }
 };

@@ -28,7 +28,7 @@ class Company extends Model
 
     public function talent()
     {
-        return $this->belongsTo(Ward::class);
+        return $this->belongsTo(Talent::class);
     }
 
     protected static function boot()

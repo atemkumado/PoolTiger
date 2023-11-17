@@ -26,42 +26,42 @@
 
                 <div class="form-group row">
                     {!! Form::label('city', 'City', ['class' => 'col-4 form-label']) !!}
-                    {!! Form::select('city', $filter['city'], null, [
+                    {!! Form::select('city', $filter['city'], $input['city'], [
                         'class' => 'form-select col-8',
                         'placeholder' => 'Select an option',
                     ]) !!}
                 </div>
                 <div class="form-group row">
-                    {!! Form::label('ability', 'Top 1 Language', ['class' => 'form-label col-4']) !!}
-                    {!! Form::select('ability', $filter['ability'], null, [
+                    {!! Form::label('skill', 'Top 1 Language', ['class' => 'form-label col-4']) !!}
+                    {!! Form::select('skill', $filter['skill'], $input['skill'], [
                         'class' => 'form-select col-8',
                         'placeholder' => 'Select an option',
                     ]) !!}
                 </div>
                 <div class="form-group row">
                     {!! Form::label('experience', 'Years Of Experience', ['class' => 'form-label col-4']) !!}
-                    {!! Form::number('salary', null, [
+                    {!! Form::number('experience', $input['experience'], [
                         'class' => 'form-input col-8',
                         'placeholder' => 'Select an option',
                     ]) !!}
                 </div>
                 <div class="form-group row">
                     {!! Form::label('position', 'Position Level', ['class' => 'form-label col-4']) !!}
-                    {!! Form::select('position', $filter['position'], null, [
+                    {!! Form::select('position', $filter['position'], $input['position'], [
                         'class' => 'form-select col-8',
                         'placeholder' => 'Select an option',
                     ]) !!}
                 </div>
                 <div class="form-group row">
                     {!! Form::label('english', 'English level', ['class' => 'form-label col-4']) !!}
-                    {!! Form::select('english', $filter['english'], null, [
+                    {!! Form::select('english', $filter['english'], $input['english'], [
                         'class' => 'form-select col-8',
                         'placeholder' => 'Select an option',
                     ]) !!}
                 </div>
                 <div class="form-group row">
                     {!! Form::label('salary', 'Salary', ['class' => 'form-label col-4']) !!}
-                    {!! Form::number('salary', null, [
+                    {!! Form::number('salary', $input['salary'], [
                         'class' => 'form-input col-8',
                         'placeholder' => 'Select an option',
                     ]) !!}
@@ -79,7 +79,7 @@
                 <ul class="list-unstyled">
                     <li class="talent">
                         <img src="{{ asset('images/avatar-man.png') }}" alt="avatar" class="talent-avatar">
-                        <a class="talent-btn " href="{{ route('talents.profile') }}"><i class="fa fa-search"></i></a>
+                        <a class="talent-btn " href="{{ route('talents.detail') }}"><i class="fa fa-search"></i></a>
                         <div class="talent-body">
                             <h5 class="mt-0 mb-1">Mr. Nguyen Thanh Long</h5>
                             Zalo - Ho Chi Minh City, Viet Nam
@@ -87,7 +87,7 @@
                     </li>
                     <li class="talent my-4">
                         <img src="{{ asset('images/avatar-man.png') }}" alt="avatar" class="talent-avatar"">
-                        <a class="talent-btn " href="{{ route('talents.profile') }}"><i class="fa fa-search"></i></a>
+                        <a class="talent-btn " href="{{ route('talents.detail') }}"><i class="fa fa-search"></i></a>
                         <div class="talent-body">
                             <h5 class="mt-0 mb-1">Mr. Diep Nhat Thu</h5>
                             Facebook - Ho Chi Minh City, Viet Nam
@@ -95,7 +95,7 @@
                     </li>
                     <li class="talent">
                         <img src="{{ asset('images/avatar-man.png') }}" alt="avatar" class="talent-avatar"">
-                        <a class="talent-btn " href="{{ route('talents.profile') }}"><i class="fa fa-search"></i></a>
+                        <a class="talent-btn " href="{{ route('talents.detail') }}"><i class="fa fa-search"></i></a>
                         <div class="talent-body">
                             <h5 class="mt-0 mb-1">Ms.Nguyen Thu Ha </h5>
                             Tiki - Ho Chi Minh City, Viet Nam
@@ -112,17 +112,12 @@
         </div>
     </div>
 
-
 @endsection
 
 {{-- ---------------------------------------------------------------- --}}
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
-            $('#city').select2();
-            $('#ability').select2();
-            console.log("Hello world!");
-        })
+    
     </script>
 @endpush

@@ -12,12 +12,14 @@
 /* General styles for the nav element */
 .nav-container {
     display: flex;
-    height: 100px;
+    height: 80px;
     justify-content: space-between;
+    margin-bottom: 5px;
 }
 /* Styles for the menu element */
 .menu , .logo {
     list-style-type: none;
+    margin-left: 40px;
 }
 .menu li, .logo li{
     display: inline-block;

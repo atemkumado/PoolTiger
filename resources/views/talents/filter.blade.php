@@ -32,8 +32,8 @@
                         ]) !!}
                     </div>
                     <div class="form-group row">
-                        {!! Form::label('ability', 'Top 1 Language', ['class' => 'form-label col-4']) !!}
-                        {!! Form::select('ability', $filter['ability'], null, [
+                        {!! Form::label('skill', 'Top 1 Language', ['class' => 'form-label col-4']) !!}
+                        {!! Form::select('skill', $filter['skill'], null, [
                             'class' => 'form-select col-8',
                             'placeholder' => 'Select an option',
                         ]) !!}
@@ -79,4 +79,4 @@
         {{--------------------------------------------------------------------}}
 
 
-@stop
+@endsection

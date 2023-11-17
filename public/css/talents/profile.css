@@ -10,11 +10,12 @@
 .profile-header {
     display: flex;
     margin-left: 20px;
+    align-items: center;
 }
 .profile-image {
     margin-right: 20px;
-    width: 50px;
-    height: 50px;
+    width: 80px;
+    height: 80px;
     object-fit: cover;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
