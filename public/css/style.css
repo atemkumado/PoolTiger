@@ -52,8 +52,11 @@
     border: #e4906e 2px solid;
     border-left: none;
     border-right: none;
+    height: 700px;
 }
-
+.content-row {
+    margin-left: 100px;
+}
 .container-filter {
     background-color: white;
     padding: 20px;
