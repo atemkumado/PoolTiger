@@ -3,7 +3,7 @@
 
 <head>
     @include('layouts.head')
-
+    @stack('scripts')
 </head>
 
 <body class="antialiased">
@@ -24,7 +24,7 @@
                         <div class="item">
                             <p class="menu-location font-semibold  hover:text-gray-900">Hanoi</p>
                             <p class="menu-statistic font-semibold">378</p>
-                        </div>
+                        </div>  
                     </li>
                     <li>
                         <div class="item">

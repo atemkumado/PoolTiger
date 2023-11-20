@@ -25,15 +25,15 @@
                     {!! Form::open(['route' => 'talents.list', 'method' => 'get', 'class' => 'form-horizontal']) !!}
 
                     <div class="form-group row">
-                        {!! Form::label('city', 'City', ['class' => 'col-4 form-label']) !!}
-                        {!! Form::select('city', $filter['city'], null, [
+                        {!! Form::label('province', 'City', ['class' => 'col-4 form-label']) !!}
+                        {!! Form::select('province', $filter['province'], null, [
                             'class' => 'form-select col-8',
                             'placeholder' => 'Select an option',
                         ]) !!}
                     </div>
                     <div class="form-group row">
-                        {!! Form::label('ability', 'Top 1 Language', ['class' => 'form-label col-4']) !!}
-                        {!! Form::select('ability', $filter['ability'], null, [
+                        {!! Form::label('skill', 'Top 1 Language', ['class' => 'form-label col-4']) !!}
+                        {!! Form::select('skill', $filter['skill'], null, [
                             'class' => 'form-select col-8',
                             'placeholder' => 'Select an option',
                         ]) !!}
@@ -79,4 +79,4 @@
         {{--------------------------------------------------------------------}}
 
 
-@stop
+@endsection

@@ -12,12 +12,14 @@
 /* General styles for the nav element */
 .nav-container {
     display: flex;
-    height: 100px;
+    height: 80px;
     justify-content: space-between;
+    margin-bottom: 5px;
 }
 /* Styles for the menu element */
 .menu , .logo {
     list-style-type: none;
+    margin-left: 40px;
 }
 .menu li, .logo li{
     display: inline-block;
@@ -50,8 +52,11 @@
     border: #e4906e 2px solid;
     border-left: none;
     border-right: none;
+    height: 700px;
 }
-
+.content-row {
+    margin-left: 100px;
+}
 .container-filter {
     background-color: white;
     padding: 20px;
