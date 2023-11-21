@@ -8,7 +8,9 @@ use App\Models\Location\District;
 use App\Models\Location\Province;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Talent extends Model
 {
@@ -31,23 +33,28 @@ class Talent extends Model
         return $this->belongsToMany(Position::class, 'talent_position');
     }
 
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
+    }
+
     public function province()
     {
         return $this->belongsTo(Province::class);
     }
-    
-    
+
+
     public function district()
     {
         return $this->belongsTo(District::class);
     }
-    
-    
+
+
     public function ward()
     {
         return $this->belongsTo(Ward::class);
     }
-    public function getEnglishes()
+    public static  function getEnglishes()
     {
         $data = [];
 
@@ -58,13 +65,25 @@ class Talent extends Model
         return $data;
     }
 
+    public static function getFilter()
+    {
+        return [
+            'province' => Province::pluck('name', 'id') ?? [''],
+            'skill' =>  Skill::pluck('name', 'id') ?? [''],
+            'experience' => [''],
+            'position' => Position::pluck('name', 'id') ?? [''],
+            'english' => self::getEnglishes() ?? [''],
+            'salary' => null
+        ];
+    }
+
     protected static function boot()
     {
         parent::boot();
 
         static::deleting(function ($talent) {
             // do some extra stuff before deleting
-           
+
         });
     }
 }

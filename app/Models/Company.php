@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Company extends Model
 {
@@ -13,22 +14,22 @@ class Company extends Model
     {
         return $this->belongsTo(Province::class);
     }
-    
-    
+
+
     public function district()
     {
         return $this->belongsTo(District::class);
     }
-    
-    
+
+
     public function ward()
     {
         return $this->belongsTo(Ward::class);
     }
 
-    public function talent()
+    public function talents(): HasMany
     {
-        return $this->belongsTo(Talent::class);
+        return $this->hasMany(Talent::class);
     }
 
     protected static function boot()

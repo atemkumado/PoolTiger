@@ -8,7 +8,6 @@
 }
 /* General styles for the header element */
 
-
 /* General styles for the nav element */
 .nav-container {
     display: flex;
@@ -17,19 +16,21 @@
     margin-bottom: 5px;
 }
 /* Styles for the menu element */
-.menu , .logo {
+.menu,
+.logo {
     list-style-type: none;
     margin-left: 40px;
 }
-.menu li, .logo li{
+.menu li,
+.logo li {
     display: inline-block;
     margin: 10px;
     font-size: larger;
 }
-.item{
+.item {
     display: flex;
 }
-.logo{
+.logo {
     width: 200px;
     height: 100px;
 }
@@ -75,6 +76,17 @@
     font-size: small;
     display: flex;
     align-items: center;
+}
+
+/* Hiding spin for number input */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
 }
 
 .form-input {
@@ -133,7 +145,7 @@
     align-content: center;
     margin-left: 50px;
 }
-.list-title{
+.list-title {
     margin-bottom: 10px;
     display: flex;
 }
