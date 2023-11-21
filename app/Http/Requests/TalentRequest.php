@@ -11,12 +11,16 @@ class TalentRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      */
-    
+
     public function rules(): array
     {
         return [
-            'province' => ['required'],
-            'skill' => ['required'],
+            'province',
+            'skill',
+            'experience',
+            'position',
+            'english',
+            'salary',
         ];
     }
 }
