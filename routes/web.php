@@ -28,6 +28,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+//DELETE WHEN COMPLETE APP
+Route::get('/testing', [ProfileController::class, 'testing'])->name('testing');
 
 require __DIR__.'/auth.php';
 require __DIR__.'/talents/filter.php';

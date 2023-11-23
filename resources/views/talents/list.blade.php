@@ -76,36 +76,47 @@
                 <div class="container-list col-7">
                     <div class="list-title">
                         <h4>Available Talents: </h4>
-                        <h4 style="color: #c43e1c;" class="ml-3">37</h4>
+                        <h4 style="color: #c43e1c;" class="ml-3">{{count($talents ?? []) }}</h4>
                     </div>
                     <ul class="list-unstyled">
                         @if(count($talents ?? []) > 0)
-                            @foreach($talents as $talent)
-                                <li class="talent">
+                            @php
+                                $count = 3;
+                            @endphp
+                            @foreach(collect($talents) as $talent)
+
+                                @if($count == 0)
+                                    @break;
+                                @else
+                                    @php
+                                        $count--;
+                                    @endphp
+                                @endif
+                                <li class="talent mt-3">
                                     <img src="{{ asset('images/avatar-man.png') }}" alt="avatar" class="talent-avatar">
-                                    <a class="talent-btn " href="{{ route('talents.detail') }}"><i class="fa fa-search"></i></a>
+                                    <a class="talent-btn " href="{{ route('talents.detail') }}"><i
+                                            class="fa fa-search"></i></a>
                                     <div class="talent-body">
                                         <h5 class="mt-0 mb-1">{{$talent['name']}}</h5>
-                                        {{$talent['company']}} - {{$talent['province']}}, Viet Nam
+                                        {{$talent['company']['name']}} - {{$talent['province']['name']}}, Viet Nam
                                     </div>
                                 </li>
 
                             @endforeach
-                                <li class="talent">
-                                    <div class="talent-body mt-4">
-                                        <a href=""> View more ... </a>
-                                    </div>
+                            <li class="talent">
+                                <div class="talent-body mt-4">
+                                    <a href=""> View more ... </a>
+                                </div>
 
-                                </li>
-                        @endif
+                            </li>
+                        @else
                             <li class="talent">
                                 <div class="talent-body mt-4">
                                     Empty
                                 </div>
 
                             </li>
-
-
+                        @endif
 
                     </ul>
                 </div>
@@ -118,13 +129,18 @@
 {{-- ---------------------------------------------------------------- --}}
 
 @push('scripts')
-
-    @if (request()->route()->getName() == 'talents.list')
+    <script>
+        console.log(@json($talents ?? []));
+    </script>
+    @if (request()->route()->getName() == 'talents.filter')
         <script>
-            $(document).ready(function() {
-                        $('.content').css("background-image", 'none');
-                        console.log("list");
-                    });
+            $(document).ready(function () {
+                // var path = window.location.pathname;
+                // console.log(path);
+                $('.content').css("background-image", 'url("http://127.0.0.1:8000/css/Talent Pool visual.jpg")');
+            });
         </script>
+    @else
+
     @endif
 @endpush

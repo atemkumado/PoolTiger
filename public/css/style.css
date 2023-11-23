@@ -45,7 +45,7 @@
 }
 
 .content {
-    /* background-image: url("Talent Pool visual.jpg"); */
+    /*background-image: url("Talent Pool visual.jpg");*/
     background-repeat: no-repeat;
     background-size: 50% 100%;
     background-position: right center;
@@ -53,16 +53,17 @@
     border: #e4906e 2px solid;
     border-left: none;
     border-right: none;
-    height: 700px;
+    min-height: 700px;
+    height: fit-content;
 }
 .content-row {
-    margin-left: 100px;
+    margin-left: 150px;
+    margin-top: 40px;
 }
 .container-filter {
     background-color: white;
     padding: 20px;
     font-size: small;
-    padding-left: 100px;
 }
 
 .form-group {
