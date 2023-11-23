@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Resources\TalentResource;
+use App\Http\Resources\TalentResourceCollection;
+use App\Models\Talent;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -56,5 +59,11 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function testing(){
+        $talents = Talent::get()->keyBy->id;
+//        return TalentResource::collection($talents);
+        return new TalentResourceCollection($talents);
     }
 }
