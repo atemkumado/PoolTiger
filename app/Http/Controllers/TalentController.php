@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\EnglishLevel;
+use App\Http\Resources\TalentResource;
 use App\Http\Resources\TalentResourceCollection;
 use App\Models\Skill;
 use App\Models\Talent;
@@ -50,9 +51,8 @@ class TalentController extends Controller
             }
         })->with('position', function ($query) use ($request) {
             if ($request->position) {
-                return $query->where('position_id', $request->position);
+                $query->where('position_id', $request->position);
             }
-            return false;
         })->with('company:id,name')
             ->get()->keyBy->id;
 
@@ -70,8 +70,12 @@ class TalentController extends Controller
         return view('talents.list', ['filter' => $data, 'selected' => $request, 'talents' => $list]);
     }
 
-    public function detail()
+    public function detail(string $id)
     {
-        return view('talents.detail');
+        $talent = Talent::with('skill')->with('province')->with('position')->with('company')->findOrFail($id);
+        $talent = new TalentResource($talent);
+//        return view('talents.detail',['talent' => new TalentResource($talent) ]);
+        return $talent;
+        return view('talents.detail',['talent' => $talent ]);
     }
 }

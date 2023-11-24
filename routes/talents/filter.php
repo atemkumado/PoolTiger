@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
         return app(TalentController::class)->list($request, $dataFilter);
     })->name('talents.list');
 
-    Route::get('/detail', [TalentController::class, 'detail'])
-        ->name('talents.detail');
+    Route::get('/detail/{id}', function ($id)  {
+        return app(TalentController::class)->detail($id);
+    })->name('talents.detail');
 });

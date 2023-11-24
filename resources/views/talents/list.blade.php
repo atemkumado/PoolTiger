@@ -94,8 +94,9 @@
                                 @endif
                                 <li class="talent mt-3">
                                     <img src="{{ asset('images/avatar-man.png') }}" alt="avatar" class="talent-avatar">
-                                    <a class="talent-btn " href="{{ route('talents.detail') }}"><i
-                                            class="fa fa-search"></i></a>
+                                    <a class="talent-btn "
+                                       href="{{ route('talents.detail', ['id'=>$talent['id']]) }}"><i
+                                                class="fa fa-search"></i></a>
                                     <div class="talent-body">
                                         <h5 class="mt-0 mb-1">{{$talent['name']}}</h5>
                                         {{$talent['company']['name']}} - {{$talent['province']['name']}}, Viet Nam

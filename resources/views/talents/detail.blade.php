@@ -8,14 +8,14 @@
                     <img src="{{ asset('images/avatar-man.png') }}" alt="avatar" class="profile-image">
                     <div class="" style="display: block">
                         <div class="profile-name">
-                            <h4>Mr. Nguyen Thanh Long</h4>
-                            <h6>Zalo - Ho Chi Minh City, Viet Nam</h6>
+                            <h4>{{$talent['name']}}</h4>
+{{--                                <h6>{{$talent['company']['name']}} - {{$talent['province']['name']}}, Viet Nam</h6>--}}
                         </div>
                         <div class="profile-social">
                             <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-facebook-f"></i></a>
                             <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-twitter"></i></a>
                             <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-instagram"></i></a>
-                            <a href="fb.com" class="mr-4"target="_blank"><i class="fa fa-linkedin"></i></a>
+                            <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-linkedin"></i></a>
                         </div>
                     </div>
                 </div>
@@ -39,7 +39,7 @@
                         </tr>
                         <tr>
                             <th width="30%">Years Of Experience</th>
-                            <td>2</td>
+                            <td>{{$talent['experience']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">Position Title</th>
@@ -105,7 +105,7 @@
                     </tr>
                     <tr>
                         <td class="reference-item">
-                           General Knowledge Test
+                            General Knowledge Test
                             <button type="button" class="btn btn-light btn-view">View</button>
                         </td>
                     </tr>
@@ -117,5 +117,9 @@
 
     {{-- ---------------------------------------------------------------- --}}
 
-
 @endsection
+@push('scripts')
+    <script>
+        console.log(@json($talent ?? []));
+    </script>
+@endpush
