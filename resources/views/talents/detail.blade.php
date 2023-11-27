@@ -9,7 +9,7 @@
                     <div class="" style="display: block">
                         <div class="profile-name">
                             <h4>{{$talent['name']}}</h4>
-{{--                                <h6>{{$talent['company']['name']}} - {{$talent['province']['name']}}, Viet Nam</h6>--}}
+                                <h6>{{$talent['company']['name']}} - {{$talent['province']['name']}}, Viet Nam</h6>
                         </div>
                         <div class="profile-social">
                             <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-facebook-f"></i></a>
@@ -27,7 +27,7 @@
                     <table class="table table-bordered">
                         <tr>
                             <th width="30%">First name</th>
-                            <td>Thu</td>
+                            <td>{{$talent['name']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">Last name</th>
@@ -43,35 +43,35 @@
                         </tr>
                         <tr>
                             <th width="30%">Position Title</th>
-                            <td>Fresher PHP Developer</td>
+                            <td>{{$talent['position'][0]['name']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">Top 1</th>
-                            <td>PHP</td>
+                            <td>{{$talent['skill'][0]['name']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">Notice</th>
-                            <td>PHP</td>
+                            <td>{{$talent['skill'][0]['describe']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">Expected Salary</th>
-                            <td>12.000.000</td>
+                            <td>{{$talent['expect']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">Salary</th>
-                            <td>12.000.000</td>
+                            <td>{{$talent['salary']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">City</th>
-                            <td>Ho Chi Minh</td>
+                            <td>{{$talent['province']['name']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">District</th>
-                            <td>10</td>
+                            <td>{{$talent['district']['name']}}</td>
                         </tr>
                         <tr>
                             <th width="30%"> English Level</th>
-                            <td>Good</td>
+                            <td>{{ $talent['english'] }}</td>
                         </tr>
                     </table>
                 </div>

@@ -5,6 +5,8 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    font-family: 'Public Sans', sans-serif;
+    /*font-size: 16px;*/
 }
 /* General styles for the header element */
 
@@ -89,20 +91,25 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
     -moz-appearance: textfield;
 }
-
+.select2-container .select2-selection--single {
+    height: 32px !important;
+    display: flex !important; /* Use flexbox layout */
+    align-items: center !important; /* Center the text vertically */
+}
 .form-input {
     display: block;
     width: 100%;
     padding: 5px;
-    border: 1px solid #ccc;
+    height: 32px;
+    border: 1px solid rgba(155, 155, 155, 0.91);
     border-radius: 5px;
 }
 
 .form-select {
     display: block;
-    width: 100%;
     padding: 5px;
-    border: 1px solid #ccc;
+    height: 28px;
+    border: 1px solid rgba(155, 155, 155, 0.91);
     border-radius: 5px;
     appearance: none;
 }
@@ -139,14 +146,4 @@ input[type="number"] {
             width: 90%;
         }
     }
-}
-.container-list {
-    display: grid;
-    justify-content: center;
-    align-content: center;
-    margin-left: 50px;
-}
-.list-title {
-    margin-bottom: 10px;
-    display: flex;
 }

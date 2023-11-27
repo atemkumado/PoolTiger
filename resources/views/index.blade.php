@@ -24,7 +24,7 @@
                         <div class="item">
                             <p class="menu-location font-semibold  hover:text-gray-900">Hanoi</p>
                             <p class="menu-statistic font-semibold">378</p>
-                        </div>  
+                        </div>
                     </li>
                     <li>
                         <div class="item">
@@ -47,7 +47,7 @@
             <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
                 @auth
                     {{-- <a href="{{ url('/dashboard') }}"
-                        class="font-semibold  hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-gray-500">Dashboard</a>
+                        class="fonts-semibold  hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-gray-500">Dashboard</a>
                          --}}
                 @else
                     <a href="{{ route('login') }}"

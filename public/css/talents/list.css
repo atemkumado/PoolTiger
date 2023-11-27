@@ -1,5 +1,6 @@
 .container-list{
-    margin-left: 0px;
+    display: grid;
+    justify-content: center;
 }
 .talent{
     display: flex;
@@ -11,7 +12,7 @@
 }
 .talent-btn{
     width: 50px;
-    height: 30px; 
+    height: 30px;
     background-color: #e87c4a;
     color: white;
     cursor: pointer;
@@ -30,4 +31,7 @@
 }
 .talent-btn:hover{
     background-color: #c65f33;
+}
+.talent-company{
+    display: block;
 }

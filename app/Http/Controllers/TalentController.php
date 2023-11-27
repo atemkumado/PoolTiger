@@ -49,23 +49,15 @@ class TalentController extends Controller
             if (!is_null($request->english)) {
                 $query->where('english', $request->english);
             }
-        })->with('position', function ($query) use ($request) {
-            if ($request->position) {
+        })->with('position')->whereHas('position', function ($query) use ($request) {
+            if (!is_null($request->position)) {
                 $query->where('position_id', $request->position);
             }
         })->with('company:id,name')
             ->get()->keyBy->id;
 
-        // $talents =  Talent::with('skill')->where('english', 5)->get()->toArray();
-        // dd(array_map(fn($level) => $level->value, EnglishLevel::cases())) ;
-//        return $talents;
-//        return Talent::with('skill:name')->with('position:name')->get()->keyBy->id;
-//        $talents = Talent::get();
-//        $talents = Talent::all();
-        $list = new TalentResourceCollection($talents);
-        // Assign the request data to the user attributes
-//        return $list;
 
+        $list = new TalentResourceCollection($talents);
         // Redirect to the form view with a success message
         return view('talents.list', ['filter' => $data, 'selected' => $request, 'talents' => $list]);
     }
@@ -75,7 +67,7 @@ class TalentController extends Controller
         $talent = Talent::with('skill')->with('province')->with('position')->with('company')->findOrFail($id);
         $talent = new TalentResource($talent);
 //        return view('talents.detail',['talent' => new TalentResource($talent) ]);
-        return $talent;
+//        return $talent;
         return view('talents.detail',['talent' => $talent ]);
     }
 }
