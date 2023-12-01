@@ -17,25 +17,25 @@
                     <li>
                         <div class="item">
                             <p class="menu-location font-semibold  hover:text-gray-900">HCM</p>
-                            <p class="menu-statistic font-semibold">512</p>
+                            <p class="menu-statistic font-semibold">{{$statistic['hcm']}}</p>
                         </div>
                     </li>
                     <li>
                         <div class="item">
                             <p class="menu-location font-semibold  hover:text-gray-900">Hanoi</p>
-                            <p class="menu-statistic font-semibold">378</p>
+                            <p class="menu-statistic font-semibold">{{$statistic['ha_noi']}}</p>
                         </div>
                     </li>
                     <li>
                         <div class="item">
                             <p class="menu-location font-semibold  hover:text-gray-900">Danang</p>
-                            <p class="menu-statistic font-semibold">121</p>
+                            <p class="menu-statistic font-semibold">{{$statistic['da_nang']}}</p>
                         </div>
                     </li>
                     <li>
                         <div class="item">
                             <p class="menu-location font-semibold  hover:text-gray-900">Other</p>
-                            <p class="menu-statistic font-semibold">101</p>
+                            <p class="menu-statistic font-semibold">{{$statistic['orther']}}</p>
                         </div>
                     </li>
                 </ul>

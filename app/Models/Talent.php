@@ -15,14 +15,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Talent extends Model
 {
     use HasFactory;
+
     protected $table = 'talents';
     public const ENGLISH_LEVEL = [
-        'NO_ENGLISH' => 0,
-        'BASIC' => 5,
-        'INTERMEDIATE' => 10,
-        'ADVANCED' => 15,
-        'FLUENTLY' => 20,
+        0 => 'No English',
+        5 => 'Basic',
+        10 => 'Intermediate',
+        15 => 'Advanced',
+        20 => 'Fluently',
     ];
+
     public function skill(): BelongsToMany
     {
         return $this->belongsToMany(Skill::class, 'talent_skill');
@@ -38,28 +40,30 @@ class Talent extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function province()
+
+    public function province(): BelongsTo
     {
         return $this->belongsTo(Province::class);
     }
 
 
-    public function district()
+    public function district(): BelongsTo
     {
         return $this->belongsTo(District::class);
     }
 
 
-    public function ward()
+    public function ward(): BelongsTo
     {
         return $this->belongsTo(Ward::class);
     }
-    public static  function getEnglishes()
+
+    public static function getEnglishes()
     {
         $data = [];
 
         foreach (EnglishLevel::cases() as $value) {
-            $name =  ucfirst(str_replace('_', " ", strtolower( $value->name)));
+            $name = ucfirst(str_replace('_', " ", strtolower($value->name)));
             $data[$value->value] = $name;
         }
         return $data;
@@ -69,12 +73,23 @@ class Talent extends Model
     {
         return [
             'province' => Province::pluck('name', 'id') ?? [''],
-            'skill' =>  Skill::pluck('name', 'id') ?? [''],
+            'skill' => Skill::pluck('name', 'id') ?? [''],
             'experience' => [''],
             'position' => Position::pluck('name', 'id') ?? [''],
             'english' => self::getEnglishes() ?? [''],
             'salary' => null
         ];
+    }
+
+    public static function getStatistics()
+    {
+       $statistic =  [
+            'ha_noi' => Talent::where('province_id', Province::HA_NOI_ID)->count(),
+            'da_nang' => Talent::where('province_id', Province::DA_NANG_ID)->count(),
+            'hcm' => Talent::where('province_id', Province::HCM_ID)->count(),
+        ];
+       $statistic['orther'] = @Talent::count() - @$statistic['ha_noi'] - @$statistic['da_nang'] - @$statistic['hcm'];
+       return $statistic;
     }
 
     protected static function boot()

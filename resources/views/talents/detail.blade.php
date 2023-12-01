@@ -2,6 +2,7 @@
 
 @section('content')
     <div class="content">
+        @include('components.modal-list');
         <div class="profile-card">
             <div class="profile-info">
                 <div class="profile-header">
@@ -31,11 +32,11 @@
                         </tr>
                         <tr>
                             <th width="30%">Last name</th>
-                            <td>Diep</td>
+                            <td></td>
                         </tr>
                         <tr>
                             <th width="30%">Date of Birth</th>
-                            <td>24/05/2000</td>
+                            <td></td>
                         </tr>
                         <tr>
                             <th width="30%">Years Of Experience</th>

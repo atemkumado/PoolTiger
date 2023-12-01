@@ -35,3 +35,6 @@
 .talent-company{
     display: block;
 }
+.modal-dialog{
+    width: 1000px !important;
+}

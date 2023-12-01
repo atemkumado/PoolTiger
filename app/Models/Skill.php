@@ -14,4 +14,8 @@ class Skill extends Model
     {
         return $this->belongsToMany(Talent::class, 'talent_skill');
     }
+    public function getBestSKill()
+    {
+        return $this->where('is_best',true)->limit(1);
+    }
 }
