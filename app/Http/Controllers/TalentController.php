@@ -34,11 +34,7 @@ class TalentController extends Controller
         ]);
         // Validate the request data
 //         dd($request->english);
-        // Create a new user instance
 
-        // $result = Talent::with(['skill' => function ($query) use ($skillId) {
-        //     return $query->where('skill_id', $skillId) ;
-        //     }])->has('skill')->get()->toArray();
         $talents = Talent::whereHas('skill', function ($query) use ($selected) {
             if (!is_null($selected->province)) {
                 $query->where('province_id', $selected->province);
@@ -59,7 +55,6 @@ class TalentController extends Controller
             ->get()->keyBy->id;
 
 //        $list = new TalentResourceCollection($talents);
-//        return $talents["10"]["getCompanyName"];
         // Redirect to the form view with a success message
         return view('talents.list', compact(['selected', 'talents']));
     }
