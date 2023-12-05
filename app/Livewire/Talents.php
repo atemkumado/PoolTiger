@@ -50,7 +50,7 @@ final class Talents extends PowerGridComponent
 
     public function datasource(): ?Collection
     {
-        return new Collection($this->data || []);
+        return new Collection($this->data ?? []);
     }
 
     public function relationSearch(): array
@@ -58,23 +58,16 @@ final class Talents extends PowerGridComponent
         return [];
     }
 
-    public function addColumns(): PowerGridColumns
-    {
-        return PowerGrid::columns()
-            ->addColumn('no')
-            ->addColumn('avatarUrl')
-            ->addColumn('name')
-            ->addColumn('email')
-            ->addColumn('phone')
-            ->addColumn('province')
-            ->addColumn('company');
-//            ->addColumn('created_at_formatted', fn(Talent $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'));
-    }
-
     public function columns(): array
     {
         return [
-
+            Column::add()
+                ->title('No')
+                ->field('no')
+                ->index(),
+            Column::add()
+                ->title(__('AVATAR'))
+                ->field('avatarUrl'),
             Column::add()
                 ->title(__('NAME'))
                 ->field('name')
@@ -87,17 +80,25 @@ final class Talents extends PowerGridComponent
                 ->title(__('PHONE'))
                 ->field('phone')
                 ->sortable(),
+            Column::make(
+                title: __('COMPANY'),
+                field: 'company_name',
+            ),
             Column::add()
-                ->title(__('COMPANY'))
-                ->field('company_id')
+                ->title(__('PROVINCE'))
+                ->field('province_name')
                 ->sortable(),
             Column::add()
                 ->title(__('YEARS'))
                 ->field('experience')
                 ->sortable(),
             Column::add()
-                ->title(__('PROVINCE'))
-                ->field('province_id')
+                ->title(__('SKILL'))
+                ->field('skill_name')
+                ->sortable(),
+            Column::add()
+                ->title(__('POSITION'))
+                ->field('position_name')
                 ->sortable(),
 
 

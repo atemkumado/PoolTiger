@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\EnglishLevel;
 use App\Http\Resources\TalentResource;
 use App\Http\Resources\TalentResourceCollection;
+use App\Models\Position;
 use App\Models\Skill;
 use App\Models\Talent;
 use App\Http\Requests\TalentRequest;
@@ -15,12 +16,6 @@ class TalentController extends Controller
 {
     protected $filter = array();
 
-    public function __construct()
-    {
-        //   $this->filter = Talent::getFilter();
-
-    }
-
     public function index()
     {
         return view('talents.list');
@@ -29,6 +24,9 @@ class TalentController extends Controller
     // Store the form data in the database
     public function list(TalentRequest $selected)
     {
+        $provinces = $this->provinces;
+        $position = $this->position;
+        $skills = $this->skills;
         $selected->validate([
 //            'english' => [new Enum(EnglishLevel::class)],
         ]);
@@ -40,7 +38,7 @@ class TalentController extends Controller
                 $query->where('province_id', $selected->province);
             }
             if (!is_null($selected->skill)) {
-                $query->where('is_best',true)->where('skill_id', $selected->skill);
+                $query->where('is_best', true)->where('skill_id', $selected->skill);
             }
             if (!is_null($selected->english)) {
                 $query->where('english', $selected->english);
@@ -51,10 +49,18 @@ class TalentController extends Controller
                     $query->where('position_id', $selected->position);
                 }
             })
-            ->with(['company:id,name,province_id', 'company.province'])
-            ->get()->keyBy->id;
+//            ->with(['company:id,name,province_id', 'company.province'])
+            ->with(['company:id,name,province_id', 'company.province', 'position:id,name', 'province:id,name', 'skill' => function ($query) {
+                $query->where('is_best', true)->get(['skills.id', 'skills.name']);
+            }])->get()
+            ->map(function ($talent) {
+                $talent->province_name = @$talent->province['name'];
+                $talent->skill_name = @$talent->skill[0]['name'];
+                $talent->position_name = @$talent->position[0]['name'];
+                return $talent;
+            });
 
-//        $list = new TalentResourceCollection($talents);
+//        $talents = new TalentResourceCollection($talents);
         // Redirect to the form view with a success message
         return view('talents.list', compact(['selected', 'talents']));
     }
@@ -62,11 +68,11 @@ class TalentController extends Controller
     public function detail(string $id)
     {
         $talent = Talent::with(['position:id,name', 'company:id,name', 'province:id,name', 'district:id,name'
-          , 'skill' => function ($query) {
-                $query->where('is_best',true);
+            , 'skill' => function ($query) {
+                $query->where('is_best', true);
             }
         ])->findOrFail($id);
-        $talent['english'] = @Talent::ENGLISH_LEVEL[ $talent['english']];
+        $talent['english'] = @Talent::ENGLISH_LEVEL[$talent['english']];
 //        return view('talents.detail',['talent' => new TalentResource($talent) ]);
 //        return $talent;
         return view('talents.detail', compact('talent'));

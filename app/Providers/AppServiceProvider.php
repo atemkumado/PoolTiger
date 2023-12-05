@@ -30,16 +30,15 @@ class AppServiceProvider extends ServiceProvider
         // Get the current user's name
         $filter = @Talent::getFilter();
         $statistic = @Talent::getStatistics();
-
-// Share the name with all views
-        View::share(compact('filter','statistic'));
+        // Share the name with all views
+        View::share(compact('filter', 'statistic'));
         //
         Relation::enforceMorphMap([
-           'talent' => Talent::class,
-           'position' => Position::class,
-           'skill' => Skill::class,
-           'province' => Province::class,
-           'ward' => Ward::class,
+            'talent' => Talent::class,
+            'position' => Position::class,
+            'skill' => Skill::class,
+            'province' => Province::class,
+            'ward' => Ward::class,
         ]);
         JsonResource::withoutWrapping();
     }
