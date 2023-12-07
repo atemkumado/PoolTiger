@@ -2,20 +2,21 @@
 
 @section('content')
     <div class="content">
+        @include('components.modal-list');
         <div class="profile-card">
             <div class="profile-info">
                 <div class="profile-header">
                     <img src="{{ asset('images/avatar-man.png') }}" alt="avatar" class="profile-image">
                     <div class="" style="display: block">
                         <div class="profile-name">
-                            <h4>Mr. Nguyen Thanh Long</h4>
-                            <h6>Zalo - Ho Chi Minh City, Viet Nam</h6>
+                            <h4>{{$talent['name']}}</h4>
+                                <h6>{{$talent['company']['name']}} - {{$talent['province']['name']}}, Viet Nam</h6>
                         </div>
                         <div class="profile-social">
+                            <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-linkedin"></i></a>
+                            <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-github"></i></a>
+                            <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-briefcase"></i></a>
                             <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-facebook-f"></i></a>
-                            <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-twitter"></i></a>
-                            <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-instagram"></i></a>
-                            <a href="fb.com" class="mr-4"target="_blank"><i class="fa fa-linkedin"></i></a>
                         </div>
                     </div>
                 </div>
@@ -27,51 +28,51 @@
                     <table class="table table-bordered">
                         <tr>
                             <th width="30%">First name</th>
-                            <td>Thu</td>
+                            <td>{{$talent['name']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">Last name</th>
-                            <td>Diep</td>
+                            <td></td>
                         </tr>
                         <tr>
                             <th width="30%">Date of Birth</th>
-                            <td>24/05/2000</td>
+                            <td></td>
                         </tr>
                         <tr>
                             <th width="30%">Years Of Experience</th>
-                            <td>2</td>
+                            <td>{{$talent['experience']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">Position Title</th>
-                            <td>Fresher PHP Developer</td>
+                            <td>{{$talent['position'][0]['name']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">Top 1</th>
-                            <td>PHP</td>
+                            <td>{{$talent['skill'][0]['name']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">Notice</th>
-                            <td>PHP</td>
+                            <td>{{$talent['skill'][0]['describe']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">Expected Salary</th>
-                            <td>12.000.000</td>
+                            <td>{{$talent['expect']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">Salary</th>
-                            <td>12.000.000</td>
+                            <td>{{$talent['salary']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">City</th>
-                            <td>Ho Chi Minh</td>
+                            <td>{{$talent['province']['name']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">District</th>
-                            <td>10</td>
+                            <td>{{$talent['district']['name']}}</td>
                         </tr>
                         <tr>
                             <th width="30%"> English Level</th>
-                            <td>Good</td>
+                            <td>{{ $talent['english'] }}</td>
                         </tr>
                     </table>
                 </div>
@@ -105,7 +106,7 @@
                     </tr>
                     <tr>
                         <td class="reference-item">
-                           General Knowledge Test
+                            General Knowledge Test
                             <button type="button" class="btn btn-light btn-view">View</button>
                         </td>
                     </tr>
@@ -117,5 +118,9 @@
 
     {{-- ---------------------------------------------------------------- --}}
 
-
 @endsection
+@push('scripts')
+    <script>
+        console.log(@json($talent ?? []));
+    </script>
+@endpush

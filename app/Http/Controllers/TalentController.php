@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Enums\EnglishLevel;
+use App\Http\Resources\TalentResource;
 use App\Http\Resources\TalentResourceCollection;
+use App\Models\Position;
 use App\Models\Skill;
 use App\Models\Talent;
 use App\Http\Requests\TalentRequest;
@@ -14,64 +16,65 @@ class TalentController extends Controller
 {
     protected $filter = array();
 
-    public function __construct()
+    public function index()
     {
-        //   $this->filter = Talent::getFilter();
-
-    }
-
-    public function index($data = null)
-    {
-        return view('talents.list', ['filter' => $data]);
+        return view('talents.list');
     }
 
     // Store the form data in the database
-    public function list(TalentRequest $request, $data = null)
+    public function list(TalentRequest $selected)
     {
-        $request->validate([
+        $provinces = $this->provinces;
+        $position = $this->position;
+        $skills = $this->skills;
+        $selected->validate([
 //            'english' => [new Enum(EnglishLevel::class)],
         ]);
         // Validate the request data
 //         dd($request->english);
-        // Create a new user instance
 
-        // $result = Talent::with(['skill' => function ($query) use ($skillId) {
-        //     return $query->where('skill_id', $skillId) ;
-        //     }])->has('skill')->get()->toArray();
-        $talents = Talent::with('skill')->whereHas('skill', function ($query) use ($request) {
-            if (!is_null($request->province)) {
-                $query->where('province_id', $request->province);
+        $talents = Talent::whereHas('skill', function ($query) use ($selected) {
+            if (!is_null($selected->province)) {
+                $query->where('province_id', $selected->province);
             }
-            if (!is_null($request->skill)) {
-                $query->where('skill_id', $request->skill);
+            if (!is_null($selected->skill)) {
+                $query->where('is_best', true)->where('skill_id', $selected->skill);
             }
-            if (!is_null($request->english)) {
-                $query->where('english', $request->english);
+            if (!is_null($selected->english)) {
+                $query->where('english', $selected->english);
             }
-        })->with('position', function ($query) use ($request) {
-            if ($request->position) {
-                return $query->where('position_id', $request->position);
-            }
-            return false;
-        })->with('company:id,name')
-            ->get()->keyBy->id;
+        })
+            ->whereHas('position', function ($query) use ($selected) {
+                if (!is_null($selected->position)) {
+                    $query->where('position_id', $selected->position);
+                }
+            })
+//            ->with(['company:id,name,province_id', 'company.province'])
+            ->with(['company:id,name,province_id', 'company.province', 'position:id,name', 'province:id,name', 'skill' => function ($query) {
+                $query->where('is_best', true)->get(['skills.id', 'skills.name']);
+            }])->get()
+            ->map(function ($talent) {
+                $talent->province_name = @$talent->province['name'];
+                $talent->skill_name = @$talent->skill[0]['name'];
+                $talent->position_name = @$talent->position[0]['name'];
+                return $talent;
+            });
 
-        // $talents =  Talent::with('skill')->where('english', 5)->get()->toArray();
-        // dd(array_map(fn($level) => $level->value, EnglishLevel::cases())) ;
-//        return $talents;
-//        return Talent::with('skill:name')->with('position:name')->get()->keyBy->id;
-//        $talents = Talent::get();
-//        $talents = Talent::all();
-        $list = new TalentResourceCollection($talents);
-        // Assign the request data to the user attributes
-//        return $list;
-
+//        $talents = new TalentResourceCollection($talents);
         // Redirect to the form view with a success message
-        return view('talents.list', ['filter' => $data, 'selected' => $request, 'talents' => $list]);
+        return view('talents.list', compact(['selected', 'talents']));
     }
 
-    public function detail()
+    public function detail(string $id)
     {
-        return view('talents.detail');
+        $talent = Talent::with(['position:id,name', 'company:id,name', 'province:id,name', 'district:id,name'
+            , 'skill' => function ($query) {
+                $query->where('is_best', true);
+            }
+        ])->findOrFail($id);
+        $talent['english'] = @Talent::ENGLISH_LEVEL[$talent['english']];
+//        return view('talents.detail',['talent' => new TalentResource($talent) ]);
+//        return $talent;
+        return view('talents.detail', compact('talent'));
     }
 }

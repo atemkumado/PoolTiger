@@ -16,28 +16,38 @@
                 <ul class="menu">
                     <li>
                         <div class="item">
-                            <p class="menu-location font-semibold  hover:text-gray-900">HCM</p>
-                            <p class="menu-statistic font-semibold">512</p>
+                            <a class="menu-location font-semibold  hover:text-gray-900"
+                               type="button" data-bs-toggle="modal"
+                               data-bs-target="#modal-list" >
+                                HCM</a>
+                            <p class="menu-statistic font-semibold">{{$statistic['hcm']}}</p>
                         </div>
                     </li>
                     <li>
                         <div class="item">
-                            <p class="menu-location font-semibold  hover:text-gray-900">Hanoi</p>
-                            <p class="menu-statistic font-semibold">378</p>
-                        </div>  
-                    </li>
-                    <li>
-                        <div class="item">
-                            <p class="menu-location font-semibold  hover:text-gray-900">Danang</p>
-                            <p class="menu-statistic font-semibold">121</p>
+                            <a class="menu-location font-semibold  hover:text-gray-900"
+                               type="button" data-bs-toggle="modal"
+                               data-bs-target="#modal-list">Hanoi</a>
+                            <p class="menu-statistic font-semibold">{{$statistic['ha_noi']}}</p>
                         </div>
                     </li>
                     <li>
                         <div class="item">
-                            <p class="menu-location font-semibold  hover:text-gray-900">Other</p>
-                            <p class="menu-statistic font-semibold">101</p>
+                            <a class="menu-location font-semibold  hover:text-gray-900"
+                               type="button" data-bs-toggle="modal"
+                               data-bs-target="#modal-list">Danang</a>
+                            <p class="menu-statistic font-semibold">{{$statistic['da_nang']}}</p>
                         </div>
                     </li>
+                    <li>
+                        <div class="item">
+                            <a class="menu-location font-semibold  hover:text-gray-900"
+                               type="button" data-bs-toggle="modal"
+                               data-bs-target="#modal-list">Other</a>
+                            <p class="menu-statistic font-semibold">{{$statistic['orther']}}</p>
+                        </div>
+                    </li>
+                    <livewire:statistic />
                 </ul>
             </nav>
         </header>
@@ -47,7 +57,7 @@
             <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
                 @auth
                     {{-- <a href="{{ url('/dashboard') }}"
-                        class="font-semibold  hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-gray-500">Dashboard</a>
+                        class="fonts-semibold  hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-gray-500">Dashboard</a>
                          --}}
                 @else
                     <a href="{{ route('login') }}"

@@ -19,16 +19,16 @@ use App\Http\Controllers\TalentController;
 */
 
 Route::middleware('auth')->group(function () {
-    $dataFilter = Talent::getFilter();
 
-    Route::get('/', function () use ($dataFilter){
-        return app(TalentController::class)->index($dataFilter);
+    Route::get('/', function () {
+        return app(TalentController::class)->index();
     })->name('talents.filter');
 
-    Route::get('filter', function (TalentRequest $request) use ($dataFilter) {
-        return app(TalentController::class)->list($request, $dataFilter);
+    Route::get('filter', function (TalentRequest $request) {
+        return app(TalentController::class)->list($request);
     })->name('talents.list');
 
-    Route::get('/detail', [TalentController::class, 'detail'])
-        ->name('talents.detail');
+    Route::get('/detail/{id}', function ($id)  {
+        return app(TalentController::class)->detail($id);
+    })->name('talents.detail');
 });
