@@ -13,10 +13,10 @@
                                 <h6>{{$talent['company']['name']}} - {{$talent['province']['name']}}, Viet Nam</h6>
                         </div>
                         <div class="profile-social">
-                            <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-facebook-f"></i></a>
-                            <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-twitter"></i></a>
-                            <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-instagram"></i></a>
                             <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-linkedin"></i></a>
+                            <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-github"></i></a>
+                            <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-briefcase"></i></a>
+                            <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-facebook-f"></i></a>
                         </div>
                     </div>
                 </div>

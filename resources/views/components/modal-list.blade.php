@@ -4,14 +4,12 @@
         <div class="modal-content" style="width: max-content; height: 80%">
             <div class="modal-header" style="background-color: rgba(255,178,126,0.47)">
                 <h6 class="modal-title" style="padding-left: 10px"><strong>Talents</strong></h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                        wire:click="closeModal"><span style="color: black"></span>X
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><span
+                        style="color: black"></span>X
                 </button>
             </div>
             <div class="modal-body">
-                @if (request()->route()->getName() == 'talents.list')
-                    <livewire:talents :data="$talents" />
-                @endif
+                <livewire:talents :data="$talents"/>
             </div>
             <div class="modal-footer" style="min-height: 40px">
                 {{--                <button type="button" class="btn btn-secondary" wire:click="closeModal"--}}

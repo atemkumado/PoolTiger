@@ -16,28 +16,38 @@
                 <ul class="menu">
                     <li>
                         <div class="item">
-                            <p class="menu-location font-semibold  hover:text-gray-900">HCM</p>
+                            <a class="menu-location font-semibold  hover:text-gray-900"
+                               type="button" data-bs-toggle="modal"
+                               data-bs-target="#modal-list" >
+                                HCM</a>
                             <p class="menu-statistic font-semibold">{{$statistic['hcm']}}</p>
                         </div>
                     </li>
                     <li>
                         <div class="item">
-                            <p class="menu-location font-semibold  hover:text-gray-900">Hanoi</p>
+                            <a class="menu-location font-semibold  hover:text-gray-900"
+                               type="button" data-bs-toggle="modal"
+                               data-bs-target="#modal-list">Hanoi</a>
                             <p class="menu-statistic font-semibold">{{$statistic['ha_noi']}}</p>
                         </div>
                     </li>
                     <li>
                         <div class="item">
-                            <p class="menu-location font-semibold  hover:text-gray-900">Danang</p>
+                            <a class="menu-location font-semibold  hover:text-gray-900"
+                               type="button" data-bs-toggle="modal"
+                               data-bs-target="#modal-list">Danang</a>
                             <p class="menu-statistic font-semibold">{{$statistic['da_nang']}}</p>
                         </div>
                     </li>
                     <li>
                         <div class="item">
-                            <p class="menu-location font-semibold  hover:text-gray-900">Other</p>
+                            <a class="menu-location font-semibold  hover:text-gray-900"
+                               type="button" data-bs-toggle="modal"
+                               data-bs-target="#modal-list">Other</a>
                             <p class="menu-statistic font-semibold">{{$statistic['orther']}}</p>
                         </div>
                     </li>
+                    <livewire:statistic />
                 </ul>
             </nav>
         </header>

@@ -22,6 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('talent_skill', function (Blueprint $table) {
+            $table->dropForeign('`talent_skill_talent_id_skill_id_unique`');
             $table->dropUnique(['talent_id','skill_id']);
         });
     }

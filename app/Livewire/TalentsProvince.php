@@ -3,27 +3,19 @@
 namespace App\Livewire;
 
 use App\Models\Talent;
-use Illuminate\Support\Carbon;
-use Illuminate\Database\Eloquent\Builder;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\URL;
-use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
-use PowerComponents\LivewirePowerGrid\Footer;
-use PowerComponents\LivewirePowerGrid\Header;
-use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridColumns;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
-final class Talents extends PowerGridComponent
+final class TalentsProvince extends PowerGridComponent
 {
     use WithExport;
 
     public $data;
+    public $provinceId;
 
     public function template(): ?string
     {
@@ -47,10 +39,13 @@ final class Talents extends PowerGridComponent
 //                ->showRecordCount(),
         ];
     }
-    public function setDataByProvince($provinceId)
+    public function setDataByProvince()
     {
-        $talents = Talent::whereHas('skill', function ($query) use ($provinceId) {
-            if (!is_null($provinceId)) {
+        $provinceId = $this->provinceId;
+        Debugbar::info($provinceId);
+
+        $this->data = Talent::whereHas('skill', function ($query) use ($provinceId) {
+            if (is_null($provinceId)) {
               return null;
             }
             $query->where('province_id', $provinceId);
@@ -68,6 +63,8 @@ final class Talents extends PowerGridComponent
     }
     public function datasource(): ?Collection
     {
+//        dd($this->data);
+        $this->setDataByProvince();
         return new Collection($this->data ?? []);
     }
 
