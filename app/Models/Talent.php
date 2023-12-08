@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class Talent extends Model
 {
@@ -79,17 +80,6 @@ class Talent extends Model
             'english' => self::getEnglishes() ?? [''],
             'salary' => null
         ];
-    }
-
-    public static function getStatistics()
-    {
-       $statistic =  [
-            'ha_noi' => Talent::where('province_id', Province::HA_NOI_ID)->count(),
-            'da_nang' => Talent::where('province_id', Province::DA_NANG_ID)->count(),
-            'hcm' => Talent::where('province_id', Province::HCM_ID)->count(),
-        ];
-       $statistic['orther'] = @Talent::count() - @$statistic['ha_noi'] - @$statistic['da_nang'] - @$statistic['hcm'];
-       return $statistic;
     }
 
     protected static function boot()

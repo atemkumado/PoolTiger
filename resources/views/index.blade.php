@@ -14,39 +14,6 @@
                     <li><img src="{{ asset('images/TOG Talent Pool Logo.jpg') }}" alt="logo"></li>
                 </ul>
                 <ul class="menu">
-                    <li>
-                        <div class="item">
-                            <a class="menu-location font-semibold  hover:text-gray-900"
-                               type="button" data-bs-toggle="modal"
-                               data-bs-target="#modal-list" >
-                                HCM</a>
-                            <p class="menu-statistic font-semibold">{{$statistic['hcm']}}</p>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="item">
-                            <a class="menu-location font-semibold  hover:text-gray-900"
-                               type="button" data-bs-toggle="modal"
-                               data-bs-target="#modal-list">Hanoi</a>
-                            <p class="menu-statistic font-semibold">{{$statistic['ha_noi']}}</p>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="item">
-                            <a class="menu-location font-semibold  hover:text-gray-900"
-                               type="button" data-bs-toggle="modal"
-                               data-bs-target="#modal-list">Danang</a>
-                            <p class="menu-statistic font-semibold">{{$statistic['da_nang']}}</p>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="item">
-                            <a class="menu-location font-semibold  hover:text-gray-900"
-                               type="button" data-bs-toggle="modal"
-                               data-bs-target="#modal-list">Other</a>
-                            <p class="menu-statistic font-semibold">{{$statistic['orther']}}</p>
-                        </div>
-                    </li>
                     <livewire:statistic />
                 </ul>
             </nav>

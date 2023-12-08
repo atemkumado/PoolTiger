@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Talent;
+use App\PowerGridThemes\GridData;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Collection;
 use PowerComponents\LivewirePowerGrid\Column;
@@ -13,15 +14,18 @@ use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 final class TalentsProvince extends PowerGridComponent
 {
     use WithExport;
-
+    protected $listeners = ['provinceId' => 'getProvinceId'];
     public $data;
     public $provinceId;
 
     public function template(): ?string
     {
-        return \App\PowerGridThemes\GridData::class;
+        return GridData::class;
     }
+    public function getProvinceId($provinceId){
+        $this->provinceId = $provinceId;
 
+    }
     public function construct(){
 
     }

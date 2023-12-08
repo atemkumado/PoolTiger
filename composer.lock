@@ -2237,16 +2237,16 @@
         },
         {
             "name": "livewire/livewire",
-            "version": "v3.2.2",
+            "version": "v3.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/livewire/livewire.git",
-                "reference": "c5366279aeb10f75bb358032bb832702e3d0d35a"
+                "reference": "ecded08cdc4b36bbb4b26bcc7f7a171ea2e4368c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/livewire/livewire/zipball/c5366279aeb10f75bb358032bb832702e3d0d35a",
-                "reference": "c5366279aeb10f75bb358032bb832702e3d0d35a",
+                "url": "https://api.github.com/repos/livewire/livewire/zipball/ecded08cdc4b36bbb4b26bcc7f7a171ea2e4368c",
+                "reference": "ecded08cdc4b36bbb4b26bcc7f7a171ea2e4368c",
                 "shasum": ""
             },
             "require": {
@@ -2299,7 +2299,7 @@
             "description": "A front-end framework for Laravel.",
             "support": {
                 "issues": "https://github.com/livewire/livewire/issues",
-                "source": "https://github.com/livewire/livewire/tree/v3.2.2"
+                "source": "https://github.com/livewire/livewire/tree/v3.2.6"
             },
             "funding": [
                 {
@@ -2307,7 +2307,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-11-29T17:43:29+00:00"
+            "time": "2023-12-04T21:20:19+00:00"
         },
         {
             "name": "monolog/monolog",

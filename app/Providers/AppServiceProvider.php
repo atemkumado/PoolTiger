@@ -29,9 +29,8 @@ class AppServiceProvider extends ServiceProvider
     {
         // Get the current user's name
         $filter = @Talent::getFilter();
-        $statistic = @Talent::getStatistics();
         // Share the name with all views
-        View::share(compact('filter', 'statistic'));
+        View::share(compact('filter'));
         //
         Relation::enforceMorphMap([
             'talent' => Talent::class,

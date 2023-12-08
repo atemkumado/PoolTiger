@@ -2,23 +2,35 @@
 
 namespace App\Livewire;
 
+use App\Models\Location\Province;
 use App\Models\Talent;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class Statistic extends Component
 {
-    public Collection|null $provinceData;
+    public $provinces ;
+    public function __construct()
+    {
+        $this->provinces = Province::get3ProvincesStatistic();
+    }
 
     public function render()
     {
-        return view('livewire.statistic')->layout('index');
+
+        Debugbar::info($this->provinces);
+        return view('livewire.statistic',[
+            'provinces' => $this->provinces
+        ])->layout('index');
     }
 
-
-    public function closeModal()
+    public $provinceId;
+    public function setProvinceId($id)
     {
-
+        $this->provinceId = $id;
+        $this->dispatch('provinceId', $id);
     }
 
 }
