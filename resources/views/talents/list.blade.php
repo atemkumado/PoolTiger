@@ -2,10 +2,10 @@
 
 @section('content')
     <div class="content">
-        @include('components.modal-list')
+
         <div class="row content-row">
             <div class="container-filter col-sm-4">
-                <h4><strong>Search by:</strong></h4>
+                <h4 style="font-size: larger; margin-bottom: 10px"><strong>Search by:</strong></h4>
                 <!-- Display the success message if any -->
                 @if (session('success'))
                     <div class="form-success">
@@ -96,6 +96,7 @@
                         </div>
 
                         @if(count($talents ?? []) > 0)
+                            @include('components.modal-list')
                             @php
                                 $count = 5;
                             @endphp
@@ -154,9 +155,7 @@
 @push('scripts')
     <script>
         console.log(@json($talents ?? []));
-        $(document).on('show.bs.modal', '#changeBetRate', function () {
-            console.log("----------------");
-        });
+        console.log("----------------");
     </script>
     @if (request()->route()->getName() == 'talents.filter')
         <script>
@@ -169,4 +168,5 @@
     @else
 
     @endif
+
 @endpush

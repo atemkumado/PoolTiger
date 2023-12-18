@@ -2,74 +2,65 @@
 
 namespace App\Livewire;
 
+use App\Models\Location\Province;
 use App\Models\Talent;
 use App\PowerGridThemes\GridData;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Collection;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class TalentsProvince extends PowerGridComponent
 {
     use WithExport;
-    protected $listeners = ['provinceId' => 'getProvinceId'];
-    public $data;
+
+    public bool $deferLoading = true; // default false
+    public string $loadingComponent = 'components.modal-loading';
+//    public int $perPage = 10;
+//    public array $perPageValues = [0,5,10,20,50];
+
+    protected $listeners = ['setProvince','setProvinceId'];
+    public $provinceTalents  = null;
     public $provinceId;
 
-    public function template(): ?string
+    public function mount(): void
     {
-        return GridData::class;
+        parent::mount();
+        $this->provinceTalents = serialize(@Province::getProvinceTalents());
     }
-    public function getProvinceId($provinceId){
-        $this->provinceId = $provinceId;
 
-    }
-    public function construct(){
 
-    }
     public function setUp(): array
     {
 //        $this->showCheckBox();
-
         return [
+
 //            Exportable::make('export')
 //                ->striped()
 //                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
 //            Header::make()->showSearchInput(),
 //            Footer::make()
-//                ->showPerPage()
+//                ->showPerPage($this->perPage, $this->perPageValues)
 //                ->showRecordCount(),
         ];
     }
-    public function setDataByProvince()
-    {
-        $provinceId = $this->provinceId;
-        Debugbar::info($provinceId);
 
-        $this->data = Talent::whereHas('skill', function ($query) use ($provinceId) {
-            if (is_null($provinceId)) {
-              return null;
-            }
-            $query->where('province_id', $provinceId);
-        })
-//            ->with(['company:id,name,province_id', 'company.province'])
-            ->with(['company:id,name,province_id', 'company.province', 'position:id,name', 'province:id,name', 'skill' => function ($query) {
-                $query->where('is_best', true)->get(['skills.id', 'skills.name']);
-            }])->get()
-            ->map(function ($talent) {
-                $talent->province_name = @$talent->province['name'];
-                $talent->skill_name = @$talent->skill[0]['name'];
-                $talent->position_name = @$talent->position[0]['name'];
-                return $talent;
-            });
-    }
-    public function datasource(): ?Collection
+    public function template(): ?string
     {
-//        dd($this->data);
-        $this->setDataByProvince();
-        return new Collection($this->data ?? []);
+        return GridData::class;
+    }
+
+
+
+    public function setProvinceId($provinceId = 0)
+    {
+        $this->provinceId = $provinceId;
+    }
+    public function datasource()
+    {
+        Debugbar::info(unserialize($this->provinceTalents));
+        return new Collection(unserialize($this->provinceTalents)[$this->provinceId] ?? []);
     }
 
     public function relationSearch(): array
@@ -84,9 +75,9 @@ final class TalentsProvince extends PowerGridComponent
                 ->title('No')
                 ->field('no')
                 ->index(),
-            Column::add()
-                ->title(__('AVATAR'))
-                ->field('avatarUrl'),
+//            Column::add()
+//                ->title(__('AVATAR'))
+//                ->field('avatarUrl'),
             Column::add()
                 ->title(__('NAME'))
                 ->field('name')
@@ -128,14 +119,14 @@ final class TalentsProvince extends PowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::datetimepicker('created_at'),
+//            Filter::datetimepicker('created_at'),
         ];
     }
 
     #[\Livewire\Attributes\On('edit')]
     public function edit($rowId): void
     {
-        $this->js('alert(' . $rowId . ')');
+//        $this->js('alert(' . $rowId . ')');
     }
 
 //    public function actions(\App\Models\Talent $row): array

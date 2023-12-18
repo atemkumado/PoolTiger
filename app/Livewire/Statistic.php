@@ -11,26 +11,35 @@ use Livewire\Component;
 
 class Statistic extends Component
 {
-    public $provinces ;
-    public function __construct()
+    public $provinces; // The number of talent for each province
+
+
+    public function mount(): void
     {
         $this->provinces = Province::get3ProvincesStatistic();
+//        $this->dispatch('setProvince', serialize($this->provinceTalents));
+
+//        Debugbar::info($this->provinceTalents);
     }
 
     public function render()
     {
+//        Debugbar::info($this->provinceTalents);
 
-        Debugbar::info($this->provinces);
-        return view('livewire.statistic',[
-            'provinces' => $this->provinces
+        $data = [];
+//        foreach ($this->provinceTalents as $key => $value) {
+//            $data[$key] = count($value);
+//        }
+        return view('livewire.statistic', [
+            'provinces' => $data
         ])->layout('index');
     }
 
     public $provinceId;
-    public function setProvinceId($id)
+    public function setDataByProvince($provinceId = 0)
     {
-        $this->provinceId = $id;
-        $this->dispatch('provinceId', $id);
-    }
+        $this->provinceId = $provinceId;
+        $this->dispatch('setProvinceId', $provinceId);
 
+    }
 }

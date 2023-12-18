@@ -35,3 +35,14 @@
 .grid-header{
     background-color: #efece996 !important;
 }
+/* CSS to disable modal scroll */
+.modal {
+    overflow-y: hidden; /* Hide vertical scrollbar */
+}
+.modal-dialog {
+    max-height: 100vh; /* Set max height to prevent scrolling beyond viewport */
+    margin-top: 0 !important; /* Reset top margin for modal */
+}
+.modal-body {
+    overflow-y: auto; /* Enable scrolling for modal body content */
+}
