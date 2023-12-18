@@ -47,25 +47,7 @@ final class Talents extends PowerGridComponent
 //                ->showRecordCount(),
         ];
     }
-    public function setDataByProvince($provinceId)
-    {
-        $talents = Talent::whereHas('skill', function ($query) use ($provinceId) {
-            if (!is_null($provinceId)) {
-              return null;
-            }
-            $query->where('province_id', $provinceId);
-        })
-//            ->with(['company:id,name,province_id', 'company.province'])
-            ->with(['company:id,name,province_id', 'company.province', 'position:id,name', 'province:id,name', 'skill' => function ($query) {
-                $query->where('is_best', true)->get(['skills.id', 'skills.name']);
-            }])->get()
-            ->map(function ($talent) {
-                $talent->province_name = @$talent->province['name'];
-                $talent->skill_name = @$talent->skill[0]['name'];
-                $talent->position_name = @$talent->position[0]['name'];
-                return $talent;
-            });
-    }
+
     public function datasource(): ?Collection
     {
         return new Collection($this->data ?? []);

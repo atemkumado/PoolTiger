@@ -2,7 +2,6 @@
 
 @section('content')
     <div class="content">
-        @include('components.modal-list');
         <div class="profile-card">
             <div class="profile-info">
                 <div class="profile-header">

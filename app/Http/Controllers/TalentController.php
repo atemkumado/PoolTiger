@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\EnglishLevel;
 use App\Http\Resources\TalentResource;
 use App\Http\Resources\TalentResourceCollection;
+use App\Models\Location\Province;
 use App\Models\Position;
 use App\Models\Skill;
 use App\Models\Talent;
@@ -24,16 +25,17 @@ class TalentController extends Controller
     // Store the form data in the database
     public function list(TalentRequest $selected)
     {
-        $provinces = $this->provinces;
-        $position = $this->position;
-        $skills = $this->skills;
         $selected->validate([
 //            'english' => [new Enum(EnglishLevel::class)],
         ]);
         // Validate the request data
 //         dd($request->english);
 
-        $talents = Talent::whereHas('skill', function ($query) use ($selected) {
+        $talents = Talent::whereHas('province', function ($query) use ($selected) {
+            if (!is_null($selected->province)) {
+                $query->where('province_id', $selected->province);
+            }
+        })->whereHas('skill', function ($query) use ($selected) {
             if (!is_null($selected->province)) {
                 $query->where('province_id', $selected->province);
             }
