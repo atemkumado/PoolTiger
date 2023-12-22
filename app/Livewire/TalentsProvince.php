@@ -20,7 +20,7 @@ final class TalentsProvince extends PowerGridComponent
 //    public int $perPage = 10;
 //    public array $perPageValues = [0,5,10,20,50];
 
-    protected $listeners = ['getProvinceId'];
+    protected $listeners = ['getProvinceId','reload'];
     public $provinceId;
 
 
@@ -44,6 +44,20 @@ final class TalentsProvince extends PowerGridComponent
         return GridData::class;
     }
 
+    /**
+     * @throws \Throwable
+     */
+    public function reload(): void
+    {
+        Debugbar::info($this->list);
+        Debugbar::info("RELOAD");
+        $this->data = null;
+        $this->list = null;
+        $this->readyToLoad = false;
+        $this->refresh();
+
+    }
+
 
     public $list;
 
@@ -51,6 +65,8 @@ final class TalentsProvince extends PowerGridComponent
     {
         $this->provinceId = $provinceId;
         $this->list = Province::getProvinceTalents($provinceId);
+        $this->readyToLoad = true;
+
     }
     public function datasource()
     {

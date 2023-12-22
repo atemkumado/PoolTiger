@@ -13,7 +13,17 @@ class Statistic extends Component
 {
     public $provinces; // The number of talent for each province
 
+    public function loadData()
+    {
+        // Emit a Livewire event to indicate data loading has started
+        $this->emit('loadingData');
 
+        // Your data fetching logic
+        $data = YourModel::all(); // Example data fetching, replace with your logic
+
+        // Emit a Livewire event to indicate data loading has ended
+        $this->emit('dataLoaded', $data);
+    }
     public function mount(): void
     {
         $this->provinces = Province::get3ProvincesStatistic();
@@ -24,11 +34,17 @@ class Statistic extends Component
         return view('livewire.statistic');
     }
 
-    public $provinceId;
+    public $loading = false;
+    public $list = [];
     public function setProvinceId($provinceId = 0)
     {
-        $this->provinceId = $provinceId;
-        $this->dispatch('getProvinceId', $provinceId);
+        // Your data fetching logic
+        $this->list = Province::getProvinceTalents($provinceId) ;
+        Debugbar::info($this->list);
+        // Emit a Livewire event to indicate data loading has ended
+
+
+
 
     }
 }

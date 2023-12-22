@@ -69,7 +69,7 @@ class Province extends Model
                     $talent->skill_name = @$talent->skill[0]['name'];
                     $talent->position_name = @$talent->position[0]['name'];
                     return $talent;
-                });
+                })->toArray();
         } else {
             $data = self::find($provinceId)
                 ->talent()
@@ -81,7 +81,7 @@ class Province extends Model
                     $talent->skill_name = @$talent->skill[0]['name'];
                     $talent->position_name = @$talent->position[0]['name'];
                     return $talent;
-                });
+                })->toArray();
         }
 //        dd($data);
 
@@ -104,6 +104,6 @@ class Province extends Model
 //                    return $talent;
 //                });
 
-        return $data;
+        return $data ?? [];
     }
 }
