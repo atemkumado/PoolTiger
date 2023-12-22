@@ -17,29 +17,18 @@ class Statistic extends Component
     public function mount(): void
     {
         $this->provinces = Province::get3ProvincesStatistic();
-//        $this->dispatch('setProvince', serialize($this->provinceTalents));
-
-//        Debugbar::info($this->provinceTalents);
     }
 
     public function render()
     {
-//        Debugbar::info($this->provinceTalents);
-
-        $data = [];
-//        foreach ($this->provinceTalents as $key => $value) {
-//            $data[$key] = count($value);
-//        }
-        return view('livewire.statistic', [
-            'provinces' => $data
-        ])->layout('index');
+        return view('livewire.statistic');
     }
 
     public $provinceId;
-    public function setDataByProvince($provinceId = 0)
+    public function setProvinceId($provinceId = 0)
     {
         $this->provinceId = $provinceId;
-        $this->dispatch('setProvinceId', $provinceId);
+        $this->dispatch('getProvinceId', $provinceId);
 
     }
 }

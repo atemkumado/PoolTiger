@@ -1,0 +1,60 @@
+services:
+  # PHP SERVICE
+  talent_pool:
+    build:
+      context: .
+      target: php
+      args:
+        - APP_ENV=${APP_ENV}
+    environment:
+      - APP_ENV=${APP_ENV}
+      - CONTAINER_ROLE=app
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    ports:
+      - "8080:8000"
+    depends_on:
+      - talent_pool-db
+      - redis
+  # DATABASE SERVICE
+  talent_pool-db:
+    image: mysql:5.7.44
+    ports:
+      - "3308:3306"
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+        - ../data/talent_pool-db:/var/lib/mysql
+    # REDIS SERVICE
+  redis:
+      image: redis:alpine
+      command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD}"
+      ports:
+          - "6379:6379"
+
+#--------------- CRM-------------------------
+
+  crm-db:
+    image: mysql:5.7.44
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_DATABASE=crm
+      - MYSQL_USER=crm
+      - MYSQL_PASSWORD=123456
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - ../data/crm-db:/var/lib/mysql
+  crm:
+    image: my-php-apache
+    ports:
+      - 8000:80
+    volumes:
+      - C:/Dev/Worksheet/CRM-master/tog-crm.demo.devinition.com:/var/www/html
+      - C:/Dev/Worksheet/docker/.htpasswd:/var/www/.htpasswd
+    links:
+      - crm-db

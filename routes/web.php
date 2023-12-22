@@ -30,6 +30,8 @@ Route::middleware('auth')->group(function () {
 });
 //DELETE WHEN COMPLETE APP
 Route::get('/testing', [ProfileController::class, 'testing'])->name('testing');
-
+Route::get('/phpinfo', function () {
+    phpinfo();
+});
 require __DIR__.'/auth.php';
 require __DIR__.'/talents/filter.php';

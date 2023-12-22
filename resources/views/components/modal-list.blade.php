@@ -9,7 +9,6 @@
                 </button>
             </div>
             <div class="modal-body">
-
                 <livewire:talents :data="$talents"/>
             </div>
             <div class="modal-footer" style="min-height: 40px">
