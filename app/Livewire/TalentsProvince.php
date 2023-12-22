@@ -9,26 +9,19 @@ use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Collection;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\ProcessDataSource;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class TalentsProvince extends PowerGridComponent
 {
-    use WithExport;
 
     public bool $deferLoading = true; // default false
     public string $loadingComponent = 'components.modal-loading';
 //    public int $perPage = 10;
 //    public array $perPageValues = [0,5,10,20,50];
 
-    protected $listeners = ['setProvince','setProvinceId'];
-    public $provinceTalents  = null;
+    protected $listeners = ['getProvinceId'];
     public $provinceId;
-
-    public function mount(): void
-    {
-        parent::mount();
-        $this->provinceTalents = serialize(@Province::getProvinceTalents());
-    }
 
 
     public function setUp(): array
@@ -52,15 +45,17 @@ final class TalentsProvince extends PowerGridComponent
     }
 
 
+    public $list;
 
-    public function setProvinceId($provinceId = 0)
+    public function getProvinceId($provinceId = 0)
     {
         $this->provinceId = $provinceId;
+        $this->list = Province::getProvinceTalents($provinceId);
     }
     public function datasource()
     {
-        Debugbar::info(unserialize($this->provinceTalents));
-        return new Collection(unserialize($this->provinceTalents)[$this->provinceId] ?? []);
+        Debugbar::info($this->list);
+        return new Collection( $this->list ?? []);
     }
 
     public function relationSearch(): array

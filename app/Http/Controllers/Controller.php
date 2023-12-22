@@ -12,14 +12,4 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
-    protected array $provinces;
-    protected array $skills;
-    protected array $position;
-    public function __construct()
-    {
-        $this->provinces = @Province::all()->pluck('name', 'id')->toArray() ?? [];
-        $this->skills = @Skill::all()->pluck('name', 'id')->toArray() ?? [];
-        $this->position = @Position::all()->pluck('name', 'id')->toArray() ?? [];
-    }
-
 }

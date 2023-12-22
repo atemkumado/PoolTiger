@@ -1,10 +1,11 @@
 <div class="statistic">
+
     @foreach($provinces as $province)
         <li>
             <div class="item">
                 <a class="menu-location font-semibold  hover:text-gray-900"
                    type="button" data-bs-toggle="modal" data-bs-target="#modal-list-province"
-                   wire:click.prevent="setDataByProvince({{$province['id']}})"
+                   wire:click.prevent="setProvinceId({{$province['id']}})"
                 >
                     {{$province['name']}}</a>
                 <p class="menu-statistic font-semibold">{{$province['count']}}</p>
@@ -19,9 +20,7 @@
             <div class="modal-content" style="width: max-content; height: 80%">
                 <div class="modal-header" style="background-color: rgba(255,178,126,0.47)">
                     <h6 class="modal-title" style="padding-left: 10px"><strong>Talents</strong></h6>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-
-                    >
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <strong style="color: black"></strong>X
                     </button>
                 </div>
@@ -37,6 +36,7 @@
             </div>
         </div>
     </div>
+
 
 </div>
 

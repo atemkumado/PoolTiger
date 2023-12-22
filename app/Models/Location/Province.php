@@ -18,7 +18,7 @@ class Province extends Model
         'ha_noi' => 1,
         'da_nang' => 48,
         'ho_chi_minh' => 79,
-        'other' => 0
+//        'other' => 0
     ];
 
     public function talent(): hasMany
@@ -38,14 +38,14 @@ class Province extends Model
 
     public static function get3ProvincesStatistic(): array
     {
-        $statistic =  self::selectRaw('provinces.id, provinces.name, count(*) as count')
+        $statistic = self::selectRaw('provinces.id, provinces.name, count(*) as count')
             ->join('talents', 'provinces.id', '=', 'talents.province_id')
             ->whereIn('province_id', array_values(self::ID))
-            ->groupBy('provinces.id','provinces.name')
+            ->groupBy('provinces.id', 'provinces.name')
             ->get()->keyBy->id->toArray();
 
         $otherCount = Talent::count() - $statistic[self::ID['ha_noi']]['count'] - $statistic[self::ID['da_nang']]['count']
-            - $statistic[self::ID['ho_chi_minh']]['count'] ;
+            - $statistic[self::ID['ho_chi_minh']]['count'];
 
         $statistic[0] = [
             'id' => false,
@@ -54,28 +54,56 @@ class Province extends Model
         ];
         return $statistic;
     }
-    public static function getProvinceTalents(): array
+
+    public static function getProvinceTalents($provinceId)
     {
-        foreach (self::ID as $provinceId){
-            $data[$provinceId] = Talent::whereHas('province', function ($query) use ($provinceId) {
-                if ($provinceId == 0) {
-                    $query->whereNotIn('province_id', [
-                        Province::ID['ha_noi'], Province::ID['da_nang'], Province::ID['ho_chi_minh']
-                    ]);
-                } else {
-                    $query->where('province_id', $provinceId);
-                }
-            })
+        if (!$provinceId) {
+            $data = Talent::whereNotIn('province_id', [
+                Province::ID['ha_noi'], Province::ID['da_nang'], Province::ID['ho_chi_minh']
+            ])
                 ->with(['company:id,name,province_id', 'company.province', 'position:id,name', 'province:id,name', 'skill' => function ($query) {
                     $query->where('is_best', true)->get(['skills.id', 'skills.name']);
                 }])->get()
-                ->map(function (Talent $talent) {
+                ->map(function ($talent) {
+                    $talent->province_name = @$talent->province['name'];
+                    $talent->skill_name = @$talent->skill[0]['name'];
+                    $talent->position_name = @$talent->position[0]['name'];
+                    return $talent;
+                });
+        } else {
+            $data = self::find($provinceId)
+                ->talent()
+                ->with(['company:id,name,province_id', 'company.province', 'position:id,name', 'province:id,name', 'skill' => function ($query) {
+                    $query->where('is_best', true)->get(['skills.id', 'skills.name']);
+                }])->get()
+                ->map(function ( $talent) {
                     $talent->province_name = @$talent->province['name'];
                     $talent->skill_name = @$talent->skill[0]['name'];
                     $talent->position_name = @$talent->position[0]['name'];
                     return $talent;
                 });
         }
-        return $data ?? [];
+//        dd($data);
+
+//            $data[$provinceId] = Talent::whereHas('province', function ($query) use ($provinceId) {
+//                if ($provinceId == 0) {
+//                    $query->whereNotIn('province_id', [
+//                        Province::ID['ha_noi'], Province::ID['da_nang'], Province::ID['ho_chi_minh']
+//                    ]);
+//                } else {
+//                    $query->where('province_id', $provinceId);
+//                }
+//            })
+//                ->with(['company:id,name,province_id', 'company.province', 'position:id,name', 'province:id,name', 'skill' => function ($query) {
+//                    $query->where('is_best', true)->get(['skills.id', 'skills.name']);
+//                }])->get()
+//                ->map(function (Talent $talent) {
+//                    $talent->province_name = @$talent->province['name'];
+//                    $talent->skill_name = @$talent->skill[0]['name'];
+//                    $talent->position_name = @$talent->position[0]['name'];
+//                    return $talent;
+//                });
+
+        return $data;
     }
 }

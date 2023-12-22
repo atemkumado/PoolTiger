@@ -30,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Share the talent data for selected inputs
         $filter = @Talent::getFilter();
         // Share the talent data for selected inputs
         View::share(compact('filter'));
