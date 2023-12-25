@@ -12,4 +12,8 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
+    public function combine(...$arrays): array|\Illuminate\Support\Collection
+    {
+        return collect($arrays)->flatten(1) ?? [];
+    }
 }

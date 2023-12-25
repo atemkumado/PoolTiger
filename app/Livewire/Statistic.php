@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Location\Province;
 use App\Models\Talent;
+use App\Services\ProvinceService;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -13,20 +14,9 @@ class Statistic extends Component
 {
     public $provinces; // The number of talent for each province
 
-    public function loadData()
+    public function mount(ProvinceService $provinceService): void
     {
-        // Emit a Livewire event to indicate data loading has started
-        $this->emit('loadingData');
-
-        // Your data fetching logic
-        $data = YourModel::all(); // Example data fetching, replace with your logic
-
-        // Emit a Livewire event to indicate data loading has ended
-        $this->emit('dataLoaded', $data);
-    }
-    public function mount(): void
-    {
-        $this->provinces = Province::get3ProvincesStatistic();
+        $this->provinces = $provinceService->get3ProvincesStatistic();
     }
 
     public function render()
@@ -34,17 +24,11 @@ class Statistic extends Component
         return view('livewire.statistic');
     }
 
-    public $loading = false;
     public $list = [];
     public function setProvinceId($provinceId = 0)
     {
         // Your data fetching logic
-        $this->list = Province::getProvinceTalents($provinceId) ;
+        $this->list = app(ProvinceService::class)->getProvinceTalents($provinceId) ;
         Debugbar::info($this->list);
-        // Emit a Livewire event to indicate data loading has ended
-
-
-
-
     }
 }

@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Enums\EnglishLevel;
+use App\Http\Requests\TalentRequest;
 use App\Models\Location\Ward;
 use App\Models\Location\District;
 use App\Models\Location\Province;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -68,18 +70,6 @@ class Talent extends Model
             $data[$value->value] = $name;
         }
         return $data;
-    }
-
-    public static function getFilter()
-    {
-        return [
-            'province' => Province::pluck('name', 'id') ?? [''],
-            'skill' => Skill::pluck('name', 'id') ?? [''],
-            'experience' => [''],
-            'position' => Position::pluck('name', 'id') ?? [''],
-            'english' => self::getEnglishes() ?? [''],
-            'salary' => null
-        ];
     }
 
     protected static function boot()

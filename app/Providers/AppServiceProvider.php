@@ -2,13 +2,14 @@
 
 namespace App\Providers;
 
-use App\Http\Livewire\YourComponent;
 use App\Livewire\Statistic;
 use App\Models\Location\Province;
 use App\Models\Location\Ward;
 use App\Models\Position;
 use App\Models\Skill;
 use App\Models\Talent;
+use App\Services\ProvinceService;
+use App\Services\TalentService;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\View;
@@ -22,7 +23,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(ProvinceService::class, function ($app) {
+            return new ProvinceService();
+        });
+        $this->app->singleton(TalentService::class, function ($app) {
+            return new TalentService();
+        });
     }
 
     /**
@@ -31,7 +37,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Share the talent data for selected inputs
-        $filter = @Talent::getFilter();
+        $filter = @TalentService::getFilter();
         // Share the talent data for selected inputs
         View::share(compact('filter'));
         // Share the talent following province information

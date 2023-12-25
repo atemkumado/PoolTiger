@@ -115,9 +115,9 @@
                                        href="{{ route('talents.detail', ['id'=>$talent['id']]) }}"><i
                                             class="fa fa-search"></i></a>
                                     <div class="talent-body">
-                                        <h5 class="mt-0 mb-1"><strong>{{$talent['name']}}</strong></h5>
+                                        <h5 class="mt-0 mb-1"><strong>{{$talent->name}}</strong></h5>
                                         <div class="talent-company">
-                                            {{$talent->company->name}} - {{$talent->company->province->name}}, Viet Nam
+                                            {{$talent->company_name}} - {{$talent->province_company_name}}, Viet Nam
                                         </div>
 
                                     </div>

@@ -10,12 +10,20 @@ use App\Models\Position;
 use App\Models\Skill;
 use App\Models\Talent;
 use App\Http\Requests\TalentRequest;
+use App\Services\TalentService;
 use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\Rules\Enum;
 
 class TalentController extends Controller
 {
+    const KEY_CACHE = 'FILTER_CACHE';
     protected $filter = array();
+    protected TalentService $talentService;
+    public function __construct(TalentService $talentService)
+    {
+        $this->talentService = $talentService;
+    }
 
     public function index()
     {
@@ -25,42 +33,19 @@ class TalentController extends Controller
     // Store the form data in the database
     public function list(TalentRequest $selected)
     {
-        $selected->validate([
-//            'english' => [new Enum(EnglishLevel::class)],
-        ]);
-        // Validate the request data
-//         dd($request->english);
+        $keyCache = json_encode([ self::KEY_CACHE, $selected->toArray()]);
 
-        $talents = Talent::whereHas('province', function ($query) use ($selected) {
-            if (!is_null($selected->province)) {
-                $query->where('province_id', $selected->province);
-            }
-        })->whereHas('skill', function ($query) use ($selected) {
-            if (!is_null($selected->province)) {
-                $query->where('province_id', $selected->province);
-            }
-            if (!is_null($selected->skill)) {
-                $query->where('is_best', true)->where('skill_id', $selected->skill);
-            }
-            if (!is_null($selected->english)) {
-                $query->where('english', $selected->english);
-            }
-        })
-            ->whereHas('position', function ($query) use ($selected) {
-                if (!is_null($selected->position)) {
-                    $query->where('position_id', $selected->position);
-                }
-            })
-//            ->with(['company:id,name,province_id', 'company.province'])
-            ->with(['company:id,name,province_id', 'company.province', 'position:id,name', 'province:id,name', 'skill' => function ($query) {
-                $query->where('is_best', true)->get(['skills.id', 'skills.name']);
-            }])->get()
-            ->map(function ($talent) {
-                $talent->province_name = @$talent->province['name'];
-                $talent->skill_name = @$talent->skill[0]['name'];
-                $talent->position_name = @$talent->position[0]['name'];
-                return $talent;
+
+//      Check if data exists in the cache
+        if (Cache::has($keyCache)) {
+            // Data exists in the cache
+            $talents = Cache::get($keyCache);
+        } else {
+            $talents = Cache::remember($keyCache, now()->addHours(), function () use ($selected){
+                return $this->talentService->getTalents($selected);
             });
+        }
+
 
 //        $talents = new TalentResourceCollection($talents);
         // Redirect to the form view with a success message

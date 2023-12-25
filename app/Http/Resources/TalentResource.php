@@ -36,7 +36,7 @@ class TalentResource extends JsonResource
             'skill' => SkillResource::collection($this->whenLoaded('skill')),
             'english' => @Talent::ENGLISH_LEVEL[$this->english],
             'company_id' => $this->company_id,
-            'company' => CompanyResource::collection($this->whenLoaded('skill')),
+            'company' => CompanyResource::collection($this->whenLoaded('company')),
         ];
     }
 }

@@ -24,7 +24,6 @@
                     </button>
                 </div>
                 <div class="modal-body" style="min-height: 400px; height: 80%">
-                    <div wire:init="setProvinceId">
                         @if(!is_null($list))
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
@@ -59,7 +58,6 @@
                         @else
                             <em>Loading.....</em>
                         @endif
-                    </div>
                 </div>
                 <div class="modal-footer" style="min-height: 40px">
                     {{--                                    <button type="button" class="btn btn-secondary" wire:click="closeModal"--}}
@@ -72,17 +70,12 @@
     </div>
 
     @push('datatables')
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css"/>
-        <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
-        <link src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
-        <link src="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap4.min.css">
-        <link src="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap4.min.css">
         <script>
-
             console.log("TABLE")
             $(document).ready(function () {
                 $('#modal-list-province').on('shown.bs.modal', function (e) {
                     console.log("CMM")
+                    $('#example').DataTable().destroy();
 
                     var table = $('#example').DataTable({
                         lengthChange: false,
@@ -95,12 +88,7 @@
                     });
 
                 });
-                $('#modal-list-province').on('hidden.bs.modal', function (e) {
-                    console.log("CMM")
 
-                    var table = $('#example').DataTable().destroy();
-
-                });
             })
         </script>
     @endpush
