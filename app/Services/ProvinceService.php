@@ -11,7 +11,7 @@ class ProvinceService
 {
     public function __construct()
     {
-        Log::debug("SHESSS");
+        Log::debug("PROVINCE SERVICE");
     }
 
     public static function getProvinceTalents($provinceId)
@@ -24,6 +24,7 @@ class ProvinceService
                     $query->where('is_best', true)->get(['skills.id', 'skills.name']);
                 }])->get()
                 ->map(function ($talent) {
+                    $talent->company_name = @$talent->company['name'];
                     $talent->province_name = @$talent->province['name'];
                     $talent->skill_name = @$talent->skill[0]['name'];
                     $talent->position_name = @$talent->position[0]['name'];
@@ -36,6 +37,7 @@ class ProvinceService
                     $query->where('is_best', true)->get(['skills.id', 'skills.name']);
                 }])->get()
                 ->map(function ( $talent) {
+                    $talent->company_name = @$talent->company['name'];
                     $talent->province_name = @$talent->province['name'];
                     $talent->skill_name = @$talent->skill[0]['name'];
                     $talent->position_name = @$talent->position[0]['name'];
@@ -58,7 +60,7 @@ class ProvinceService
             - $statistic[Province::ID['ho_chi_minh']]['count'];
 
         $statistic[0] = [
-            'id' => false,
+            'id' => 0,
             'name' => 'Other',
             'count' => $otherCount
         ];

@@ -25,19 +25,20 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($talents as $id => $data)
-                                <tr>
-                                    <th>{{$id}}</th>
-                                    <th>{{$data["name"]}}</th>
-                                    <th>{{$data["email"]}}</th>
-                                    <th>{{$data["phone"]}}</th>
-                                    <th>{{$data["company"]["name"]}}</th>
-                                    <th>{{$data["province_name"]}}</th>
-                                    <th>{{$data["experience"]}}</th>
-                                    <th>{{$data["skill_name"]}}</th>
-                                    <th>{{$data["position_name"]}}</th>
-                                </tr>
-                            @endforeach
+{{--                            @foreach($talents as $id => $data)--}}
+{{--                                <tr>--}}
+{{--                                    <th>{{$id}}</th>--}}
+{{--                                    <th>{{$data["name"]}}</th>--}}
+{{--                                    <th>{{$data["email"]}}</th>--}}
+{{--                                    <th>{{$data["phone"]}}</th>--}}
+{{--                                    <th>{{$data["company"]["name"]}}</th>--}}
+{{--                                    <th>{{$data["province_name"]}}</th>--}}
+{{--                                    <th>{{$data["experience"]}}</th>--}}
+{{--                                    <th>{{$data["skill_name"]}}</th>--}}
+{{--                                    <th>{{$data["position_name"]}}</th>--}}
+{{--                                </tr>--}}
+{{--                            @endforeach--}}
+                            </tbody>
                         </table>
 
                     @else
@@ -58,9 +59,9 @@
         console.log("TABLE")
         $(document).ready(function () {
             $('#modal-list').on('shown.bs.modal', function (e) {
-                $('#talent-table').DataTable().destroy();
                 var table = $('#talent-table').DataTable({
                     lengthChange: false,
+                    dataSrc:{{$talents}},
                     buttons: [
                         {
                             extend: 'csv',

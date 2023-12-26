@@ -10,9 +10,12 @@ use App\Models\Position;
 use App\Models\Skill;
 use App\Models\Talent;
 use App\Http\Requests\TalentRequest;
+use App\Services\ProvinceService;
 use App\Services\TalentService;
 use App\Models\User;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Validation\Rules\Enum;
 
 class TalentController extends Controller
@@ -20,14 +23,24 @@ class TalentController extends Controller
     const KEY_CACHE = 'FILTER_CACHE';
     protected $filter = array();
     protected TalentService $talentService;
-    public function __construct(TalentService $talentService)
+    protected ProvinceService $provinceService;
+    public function __construct(TalentService $talentService, ProvinceService $provinceService)
     {
         $this->talentService = $talentService;
+        $this->provinceService = $provinceService;
     }
 
     public function index()
     {
         return view('talents.list');
+    }
+    public function getData( $provinceId)
+    {
+        $data = $this->provinceService->getProvinceTalents($provinceId);
+        Debugbar::info($data);
+//        dd( ['data'=> $data, 'status'=> $request]);
+//        $data = Talent::all();
+        return response()->json(['data'=> $data]);
     }
 
     // Store the form data in the database

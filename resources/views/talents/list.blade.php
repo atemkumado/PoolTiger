@@ -153,10 +153,6 @@
 {{-- ---------------------------------------------------------------- --}}
 
 @push('scripts')
-    <script>
-        console.log(@json($talents ?? []));
-        console.log("----------------");
-    </script>
     @if (request()->route()->getName() == 'talents.filter')
         <script>
             $(document).ready(function () {
