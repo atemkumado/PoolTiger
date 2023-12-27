@@ -4,7 +4,7 @@
         <li>
             <div class="item">
                 <a class="menu-location font-semibold  hover:text-gray-900"
-                   type="button" data-bs-toggle="modal" data-bs-target="#modal-list-province"
+                   type="button" data-bs-toggle="modal" data-bs-target="#talent-modal"
                    data-province_id="{{ $province['id']}}"
 {{--                   wire:click="setProvinceId({{$province['id']}})"--}}
                 >
@@ -14,7 +14,7 @@
         </li>
     @endforeach
 
-    <div wire:ignore.self class="modal fade" id="modal-list-province" tabindex="1" aria-labelledby="talentModalLabel"
+    <div wire:ignore.self class="modal fade" id="talent-modal" tabindex="1" aria-labelledby="talentModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content" style="width: max-content; height: 80%">
@@ -26,7 +26,7 @@
                 </div>
                 <div class="modal-body" style="min-height: 400px; height: 80%">
                         @if(!is_null($list))
-                            <table id="example" class="table table-striped table-bordered" style="width:100%">
+                            <table id="talent-table" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
                                 <tr>
                                     <th>No</th>
@@ -62,20 +62,40 @@
     @push('datatables')
         <script>
             console.log("TABLE")
+            $('#talent-table', this).DataTable().destroy();
             // Close the modal when the close button or outside modal is clicked
 
             $(document).ready(function () {
-                $('#modal-list-province').on('hidden.bs.modal', function () {
+                $('#talent-modal').on('hidden.bs.modal', function () {
                     // Find the DataTable instance within the modal content and destroy it
-                    $('#example', this).DataTable().destroy();
+                    console.log("DESTROY");
+                    $('#talent-table', this).DataTable().destroy();
+                });
+                $('.close, .modal').on('click', function() {
+                    $('#talent-modal').css('display', 'none');
                 });
 
+// Prevent modal from closing when clicking inside the modal content
+                $('.modal-content').on('click', function(event) {
+                    event.stopPropagation();
+                });
+
+
                 $('.menu-location').on('click', function (e) {
-                // $('#modal-list-province').on('shown.bs.modal', function (e) {
-                    $('#example').css('display', 'block');
+                // $('#talent-modal').on('shown.bs.modal', function (e) {
                     const request = $(this).data('province_id') ?? 0;
-                    console.log("click")
-                    $('#example').DataTable({
+                    const route = "{{ route('talents.get', ['data' => ':data']) }}"
+                    loadData(route, request);
+                });
+                $('.view-talents').on('click', function (e) {
+                    // $('#talent-modal').on('shown.bs.modal', function (e) {
+                    const route = "{{ route('talents.view', ['data' => ':data']) }}"
+                    loadData(route);
+                });
+                function loadData(route, request = null){
+                    console.log(route);
+                    $('#talent-table').css('display', 'block');
+                    $('#talent-table').DataTable({
                         "order": [[0, 'asc']],
                         "columnDefs": [{
                             "targets": 0, // Targeting the first column
@@ -88,7 +108,7 @@
                         "processing": true,
                         "serverSide": false, // Enable server-side processing
                         "ajax": {
-                            "url": "{{ route('process.data', ['data' => ':data']) }}".replace(':data', request), // URL to fetch data from
+                            "url": route.replace(':data', request), // URL to fetch data from
                             "type": "GET",
                             "dataSrc": "data"
                         },
@@ -104,16 +124,8 @@
                             { "data": "position_name" },
                         ]
                     });
+                }
 
-                });
-                $('.close, .modal').on('click', function() {
-                    $('#modal-list-province').css('display', 'none');
-                });
-
-// Prevent modal from closing when clicking inside the modal content
-                $('.modal-content').on('click', function(event) {
-                    event.stopPropagation();
-                });
             })
         </script>
     @endpush

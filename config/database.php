@@ -42,6 +42,15 @@ return [
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
+        'crm' => [
+            'driver' => 'mysql', // Change driver type if using another database type
+            'host' => '127.0.0.1',
+//            'host' => 'talent_pool-db',
+            'port' => ':3306',
+            'database' => 'crm',
+            'username' => 'root',
+            'password' => '',
+        ],
 
         'mysql' => [
             'driver' => 'mysql',

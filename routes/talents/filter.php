@@ -31,4 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/detail/{id}', function ($id)  {
         return app(TalentController::class)->detail($id);
     })->name('talents.detail');
+    Route::get('/get/{data}', [TalentController::class, 'getData'])->name('talents.get');
+    Route::get('/view/{data}', [TalentController::class, 'viewMore'])->name('talents.view');
+
 });

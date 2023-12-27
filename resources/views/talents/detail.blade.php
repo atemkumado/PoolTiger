@@ -110,6 +110,11 @@
                         </td>
                     </tr>
                 </table>
+
+                <a href="{{ url()->previous() }}" class="btn btn-danger mt-3 " style="background-color: #e87c4a; border:none">
+                    <i  style="width:35px" class="fa fa-backward"></i>
+                </a>
+
             </div>
         </div>
     </div>

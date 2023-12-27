@@ -126,8 +126,8 @@
                             @endforeach
                             <li class="talent">
                                 <div class="talent-body mt-4">
-                                    <a href ="" type="button" data-bs-toggle="modal"
-                                       data-bs-target="#modal-list">
+                                    <a href ="" type="button" data-bs-toggle="modal" class="view-talents"
+                                       data-bs-target="#talent-modal">
                                         View more ...
                                     </a>
                                 </div>
@@ -156,13 +156,9 @@
     @if (request()->route()->getName() == 'talents.filter')
         <script>
             $(document).ready(function () {
-                // var path = window.location.pathname;
-                // console.log(path);
-                $('.content').css("background-image", 'url("http://127.0.0.1:8000/css/Talent Pool visual.jpg")');
+                $('.content').css("background-image", 'url("{{ asset('css/Talent Pool visual.jpg') }}")');
             });
         </script>
-    @else
-
     @endif
 
 @endpush

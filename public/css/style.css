@@ -118,8 +118,9 @@ input[type="number"] {
 }
 
 .form-button {
+    margin-top: 15px;
     display: block;
-    width: 15%;
+    width: 12%;
     padding: 10px;
     border: none;
     border-radius: 5px;

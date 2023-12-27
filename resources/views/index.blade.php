@@ -10,8 +10,10 @@
 @auth
     <header>
         <nav class="nav-container">
-            <ul class="logo">
-                <li><img src="{{ asset('images/TOG Talent Pool Logo.jpg') }}" alt="logo"></li>
+            <ul class="logo" >
+                <li><a href="{{ route('talents.filter') }}"><img src="{{ asset('images/TOG Talent Pool Logo.jpg') }}" alt="logo"></a>
+
+                </li>
             </ul>
             <ul class="menu" style="padding-top: 5px;    padding-right: 10px;">
                 <livewire:statistic/>

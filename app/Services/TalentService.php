@@ -8,6 +8,7 @@ use App\Models\Position;
 use App\Models\Skill;
 use App\Models\Talent;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class TalentService
@@ -17,6 +18,7 @@ class TalentService
         Log::debug("TALENT SERVICE");
 
     }
+
     public function getTalents(TalentRequest $request): Collection|array
     {
         $talents = Talent::query();
@@ -64,5 +66,16 @@ class TalentService
             'english' => Talent::getEnglishes() ?? [''],
             'salary' => null
         ];
+    }
+    const KEY_VIEW_CACHE = 'VIEW_CACHE';
+
+    public function storeData($value)
+    {
+        Cache::put(self::KEY_VIEW_CACHE, $value, now()->addHours());
+    }
+
+    public function getData()
+    {
+        return Cache::get(self::KEY_VIEW_CACHE);
     }
 }
