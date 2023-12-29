@@ -34,6 +34,7 @@ class TalentController extends Controller
 
     public function index()
     {
+        Cache::clear();
         return view('talents.list');
     }
 

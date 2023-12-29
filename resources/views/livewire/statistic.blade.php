@@ -38,6 +38,7 @@
                                     <th>Experience</th>
                                     <th>Skill</th>
                                     <th>Position</th>
+                                    <th>Salary</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -122,6 +123,7 @@
                             { "data": "experience" },
                             { "data": "skill_name" },
                             { "data": "position_name" },
+                            { "data": "salary" },
                         ]
                     });
                 }

@@ -35,8 +35,16 @@ class TalentService
         }
         if (!is_null($request->position)) {
             $talents->whereHas('position', function ($query) use ($request) {
-                $query->where('position_id', true)->where('skill_id', $request->position);
+                $query->where('position_id', $request->position);
             });
+        }
+
+        if (!is_null($request->salary)) {
+            $talents->where('salary','<=', $request->salary);
+        }
+
+        if (!is_null($request->experience)) {
+            $talents->where('experience','>=', $request->experience);
         }
         // get company information
         $talents->with(['company:id,name,province_id', 'company.province', 'province:id,name', 'position:id,name', 'skill']);
@@ -50,7 +58,7 @@ class TalentService
             $talent->skill_name = @$talent->skill[0]['name'];
             $talent->position_name = @$talent->position[0]['name'];
             return $talent;
-        })->toArray();
+        });
         Log::debug("GET_TALENT");
         return $talents;
     }
