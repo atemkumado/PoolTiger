@@ -9,14 +9,17 @@ use App\Models\Skill;
 use App\Models\Talent;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class TalentService
 {
+    private array $credentials;
+
     public function __construct()
     {
         Log::debug("TALENT SERVICE");
-
+        $this->credentials = config('services.crm');
     }
 
     public function getTalents(TalentRequest $request): Collection|array
@@ -40,11 +43,11 @@ class TalentService
         }
 
         if (!is_null($request->salary)) {
-            $talents->where('salary','<=', $request->salary);
+            $talents->where('salary', '<=', $request->salary);
         }
 
         if (!is_null($request->experience)) {
-            $talents->where('experience','>=', $request->experience);
+            $talents->where('experience', '>=', $request->experience);
         }
         // get company information
         $talents->with(['company:id,name,province_id', 'company.province', 'province:id,name', 'position:id,name', 'skill']);
@@ -75,15 +78,18 @@ class TalentService
             'salary' => null
         ];
     }
-    const KEY_VIEW_CACHE = 'VIEW_CACHE';
 
-    public function storeData($value)
+    const KEY_VIEW_CACHE = 'VIEW_CACHE';
+    const KEY_TOKEN_CACHE = 'TOKEN_CACHE'; // SESSION_TOKEN_CACHE
+    const KEY_ACCESS_CACHE = 'ACCESSS_CACHE';
+
+    public function storeData($value, $key = self::KEY_VIEW_CACHE)
     {
-        Cache::put(self::KEY_VIEW_CACHE, $value, now()->addHours());
+        Cache::put($key, $value, now()->addHours());
     }
 
-    public function getData()
+    public function getData($key = self::KEY_VIEW_CACHE)
     {
-        return Cache::get(self::KEY_VIEW_CACHE);
+        return Cache::get($key) ?? false;
     }
 }

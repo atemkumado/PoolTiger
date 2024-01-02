@@ -15,7 +15,8 @@
         "laravelcollective/html": "^6.4",
         "livewire/livewire": "^3.2",
         "spatie/laravel-html": "^3.3",
-        "wire-elements/modal": "^2.0"
+        "wire-elements/modal": "^2.0",
+        "ext-curl": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.9",

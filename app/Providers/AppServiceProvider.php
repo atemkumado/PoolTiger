@@ -10,6 +10,7 @@ use App\Models\Skill;
 use App\Models\Talent;
 use App\Services\ProvinceService;
 use App\Services\TalentService;
+use App\Services\VtigerService;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\View;
@@ -23,12 +24,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(ProvinceService::class, function ($app) {
-            return new ProvinceService();
-        });
-        $this->app->singleton(TalentService::class, function ($app) {
-            return new TalentService();
-        });
+        $services = [
+            'TalentService' => TalentService::class,
+            'ProvinceService' => ProvinceService::class,
+            'VtigerService' => VtigerService::class,
+            // Add more services as needed
+        ];
+
+        foreach ($services as $alias => $service) {
+            $this->app->singleton($alias, function ($app) use ($service) {
+                return new $service();
+            });
+        }
     }
 
     /**

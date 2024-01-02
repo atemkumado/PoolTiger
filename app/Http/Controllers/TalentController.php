@@ -13,10 +13,12 @@ use App\Http\Requests\TalentRequest;
 use App\Services\ProvinceService;
 use App\Services\TalentService;
 use App\Models\User;
+use App\Services\VtigerService;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Validation\Rules\Enum;
 
@@ -25,11 +27,13 @@ class TalentController extends Controller
     const KEY_FILTER_CACHE = 'FILTER_CACHE';
     protected TalentService $talentService;
     protected ProvinceService $provinceService;
+    protected VtigerService $vtigerService;
 
-    public function __construct(TalentService $talentService, ProvinceService $provinceService)
+    public function __construct(TalentService $talentService, ProvinceService $provinceService, VtigerService $vtigerService)
     {
         $this->talentService = $talentService;
         $this->provinceService = $provinceService;
+        $this->vtigerService = $vtigerService;
     }
 
     public function index()
@@ -85,8 +89,29 @@ class TalentController extends Controller
         return view('talents.detail', compact('talent'));
     }
 
+
+
     public function loadCRM(){
-        $users = DB::connection('crm')->table('vtiger_field')->get();
-        dd($users);
+        $this->vtigerService->loadSession();
+        if (!$this->vtigerService->sessionName) {
+            // Data exists in the cache
+            echo "ERROR: SESSION NOT FOUND";
+            return false;
+        }
+        $sessionName = $this->vtigerService->sessionName;
+        $query = 'SELECT * FROM vtiger_leadder';
+        $data = $this->vtigerService->getDataQuery($query);
+        return $data;
+//        $response = Http::asForm()->post('http://localhost:8000/index.php', $formData);
+//
+//        // Check if the request was successful
+//        if ($response->successful()) {
+//            // Assuming the response is JSON
+//            // Process the received data as needed
+//            return $response;
+//        } else {
+//            // If the request fails, handle the error
+//            return $response->status();
+//        }
     }
 }

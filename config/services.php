@@ -21,6 +21,19 @@ return [
         'scheme' => 'https',
     ],
 
+    # Account of user in CRM website
+    $crm = 'http://localhost:8000/',
+    'crm' => [
+        'username' => 'long',
+        'password' => '123456',
+        'base_url' => $crm,
+        'index_url' => $crm . 'index.php',
+        'get_leads_url' => $crm . 'tog_apps/get_leads_data_info.php',
+        'get_webservice_url' => $crm . 'webservice.php',
+        'accessKey'=> "4itWgheHtEDDRKda"
+
+    ],
+
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],
