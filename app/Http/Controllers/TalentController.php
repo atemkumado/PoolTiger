@@ -95,13 +95,13 @@ class TalentController extends Controller
         $this->vtigerService->loadSession();
         if (!$this->vtigerService->sessionName) {
             // Data exists in the cache
-            echo "ERROR: SESSION NOT FOUND";
             return false;
         }
         $sessionName = $this->vtigerService->sessionName;
-        $query = 'SELECT * FROM vtiger_leadder';
+        $query = 'SELECT * FROM Leads ;';
         $data = $this->vtigerService->getDataQuery($query);
-        return $data;
+        echo count($data ?? []);
+        echo json_encode($data, JSON_PRETTY_PRINT);
 //        $response = Http::asForm()->post('http://localhost:8000/index.php', $formData);
 //
 //        // Check if the request was successful
