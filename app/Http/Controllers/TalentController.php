@@ -71,7 +71,6 @@ class TalentController extends Controller
         }
         Debugbar::info($talents );
         $this->talentService->storeData($talents);
-//        $talents = new TalentResourceCollection($talents);
         // Redirect to the form view with a success message
         return view('talents.list', compact(['selected', 'talents']));
     }
@@ -93,25 +92,8 @@ class TalentController extends Controller
 
     public function loadCRM(){
         $this->vtigerService->loadSession();
-        if (!$this->vtigerService->sessionName) {
-            // Data exists in the cache
-            return false;
-        }
-        $sessionName = $this->vtigerService->sessionName;
-        $query = 'SELECT * FROM Leads ;';
-        $data = $this->vtigerService->getDataQuery($query);
-        echo count($data ?? []);
-        echo json_encode($data, JSON_PRETTY_PRINT);
-//        $response = Http::asForm()->post('http://localhost:8000/index.php', $formData);
-//
-//        // Check if the request was successful
-//        if ($response->successful()) {
-//            // Assuming the response is JSON
-//            // Process the received data as needed
-//            return $response;
-//        } else {
-//            // If the request fails, handle the error
-//            return $response->status();
-//        }
+        $data = @$this->vtigerService->getExport();
+        return $data;
+//        return "DONE";
     }
 }
