@@ -2,22 +2,24 @@
 
 namespace App\Services;
 
-use App\Constants\VtigerConstant;
-use App\Http\Requests\TalentRequest;
 use App\Models\Location\Province;
-use App\Models\Position;
-use App\Models\Skill;
 use App\Models\Talent;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Color;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Writer\Exception;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class VtigerService extends Service
 {
     private $sessionName;
     private $userId; //hashed user id
-    private $sessionId; //hashed user id
+
     public function __construct()
     {
         parent::__construct();
@@ -60,18 +62,8 @@ class VtigerService extends Service
         return true;
 
     }
-    private function extractSessionId($setCookieHeader)
-    {
-        // Logic to extract PHPSESSID from Set-Cookie header
-        // You may need to parse the header to get the PHPSESSID value
-        // Example logic:
-        $matches = [];
-        if (preg_match('/PHPSESSID=([^;]+)/', $setCookieHeader, $matches)) {
-            return $matches[1]; // PHPSESSID value extracted
-        } else {
-            return 'Unable to extract PHPSESSID';
-        }
-    }
+
+
     public function getSessionId()
     {
         $accessKey = $this->getData(self::KEY_ACCESS_CACHE);
@@ -87,7 +79,7 @@ class VtigerService extends Service
             "accessKey" => $accessKey
         ];
 
-        $response = Http::asForm()->post($this->credentials['get_webservice_url'], $data);
+        $response = Http::withBasicAuth($this->credentials['username'], $this->credentials['password'])->asForm()->post($this->credentials['get_webservice_url'], $data);
         // Check if the request was successful
         if ($response->failed() || !@$response->json()["success"]) {
             echo @$response->json()["error"]["message"] ?? "ERROR: SESSION NOT FOUND";
@@ -103,17 +95,6 @@ class VtigerService extends Service
 
     }
 
-    public function createAPI($element)
-    {
-        $accessKey = $this->getData(self::KEY_ACCESS_CACHE);
-        $data = [
-            "operation" => "create",
-            "username" => $this->credentials['username'],
-            "accessKey" => $accessKey
-        ];
-
-        $response = Http::asForm()->post($this->credentials['get_webservice_url'], $data);
-    }
 
     public function getLeadInfo()
     {
@@ -129,45 +110,45 @@ class VtigerService extends Service
 
     public function getExport()
     {
-        $sessionId = $this->sessionName;
-        echo json_encode($sessionId);
-        die;
-//        $token = $this->getData(self::KEY_TOKEN_CACHE);
+
         $queryParams = [
-            'module' => 'Reports',
-            'view' => 'ExportReport',
-            'mode' => 'GetXLS',
-            'record' => '230',
+            'operation' => 'getReport',
+            'sessionName' => $this->sessionName,
+            'id' => 230,
         ];
-        $url = 'http://localhost:8000/index.php?module=Reports&view=ExportReport&mode=GetCSV&record=230';
-//        $url = $this->credentials['index_url'] . '?' . http_build_query($queryParams);
+        $response = Http::post($this->credentials['get_webservice_url'], $queryParams);
 
-//        $accessKey = 'sid:' . $sId . ',' . $token;
-//        $accessKey = 'sid:dedd905113c35602d572b2f39a65652cc0ea8194,1704272585';
-
-//        $data = [
-//            '__vtrftk' => $accessKey,
-//            'advanced_filter' => '{"1":{"columns":{},"condition":"and"},"2":{"columns":{"0":{"columnname":"vtiger_leadscf:cf_1221:Leads_TOG_Talent_Pool:cf_1221:C","comparator":"e","value":"1","column_condition":""}}}}'
-//        ];
-        $sessionId = '7040e1a465  9781ef1c059';
-        $response = Http::withHeaders([
-            'Cookie' => "PHPSESSID=$sessionId", // Set the PHPSESSID in the Cookie header
-            // Add other headers if needed
-        ])->get($url);
         if ($response->failed()) {
             echo @$response->json()["error"]["message"] ?? "ERROR: FAILED";
             return $response->status();
         }
         $csvData = $response->body();
         file_put_contents('exported_data.csv', $csvData);
-        $result = @$response->json();
-        echo json_encode($csvData);
-        echo json_encode($result);
+//        $result = @$response->json();
+        echo json_encode($response->json());
+//        echo json_encode($result);
 
         // Assuming the response is JSON
         // Process the received data as needed
 
-//        return @$result;
+        return @$csvData;
+    }
+
+    public function getListTypes()
+    {
+
+        $queryParams = [
+            'operation' => 'listtypes',
+            'sessionName' => $this->sessionName,
+        ];
+        $response = Http::get($this->credentials['get_webservice_url'], $queryParams);
+
+        if ($response->failed()) {
+            echo @$response->json()["error"]["message"] ?? "ERROR: FAILED";
+            return $response->status();
+        }
+        $data = $response->json();
+        return @$data;
     }
 
     public function getDataQuery($query)
@@ -202,63 +183,162 @@ class VtigerService extends Service
 
         return $allRecords;
     }
-    private $field;
-    private $fieldMapping;
 
-    public function fetchingData()
+
+    /**
+     * @throws Exception
+     */
+    public function fetchExportFile()
     {
         $info = $this->getLeadInfo(); // Get $field and $fieldMapping
-//        echo json_encode($info);
+
         if (!$info) {
             return false;
         }
-        $this->field = $info['vtigerFieldArr'];
-        $this->fieldMapping = $info['mappings'];
+        $field = $info['vtigerFieldArr'];
+        $mappings = $info['mappings'] ?? [];
+        $fieldMappings = [];
+        foreach ($mappings as $key => $value) {
+            $fieldMappings[$value] = $key;
+        }
+//        echo json_encode($fieldMappings, JSON_PRETTY_PRINT);
+//        die;
+        // GET LEAD DATA
+        $talentPoolField = $this->credentials['talentPoolField'];
+        $query = "SELECT * FROM Leads";
+//        $query = "SELECT * FROM Leads WHERE $talentPoolField != 0";
+        $data = $this->getDataQuery($query) ?? [];
 
-        // Fetching User and Groups
-        $userQuery = "SELECT * FROM Users ";
-        $groupQuery = "SELECT * FROM Users ";
-        $users = $this->getDataQuery($userQuery);
-        $groups = $this->getDataQuery($groupQuery);
+        if (count($data) == 0) {
+            return false;
+        }
+        // HANDLE HEADER
+        $headers = array_keys($data[0]);
 
-
-        $skills = VtigerConstant::SKILL_FIELDS;
-        $skillFields = [];
-        foreach ($skills as $skill) {
-            $skillField = @$this->fieldMapping[$skill];
-            if (isset($skillField)) {
-                array_push($skillFields, $skillField);
-            }
+        $convertedHeader = [];
+        foreach ($headers as $value) {
+            $convertedHeader[] = $fieldMappings[$value] ?? $value;
         }
 
-        echo json_encode($skillFields, JSON_PRETTY_PRINT);
-//        echo json_encode($this->fieldMapping, JSON_PRETTY_PRINT);
+        $inserted = $this->updateTalents($data);
+        $this->saveDataToExcel($data, $convertedHeader);
+        return $inserted;
+    }
+
+    function updateTalents($data): array
+    {
+        $insertedTalents = [];
+        $provinces = [];
+        foreach ($data as $value) {
+            // Handle Provinces
+            $province = $this->handleProvince((!$value['city']) ?  $value['cf_792'] : $value['city']);
+            if(!array_key_exists($province, $provinces)){
+                $provinces[$province] = Province::where('name_en',$province)->value('id') ?? '';
+            }
+
+            // Build data
+            $insertedTalents[] = [
+                "firstname" => @$value['firstname'],
+                "lastname" => @$value['lastname'],
+                "lead_no" => @$value['lead_no'],
+                "name" => $value['firstname'] . " " . $value['lastname'] ?? "",
+                "email" => $value['email'] ?? "",
+                "birthdate" => $value['cf_790'] ?? "",
+                "phone" => $value['mobile'] ?? "",
+                "english" => Talent::ENGLISH_LEVEL_TITLE[$value['cf_1211']] ?? "",
+                "linkedin" => $value['cf_1097'] ?? "",
+//                "facebook" => $value['firstname'],
+//                "github" => $value['firstname'],
+                "salary" => $value['cf_842'] ?? "",
+                "expect" => $value['cf_866'] ?? "",
+                "experience" => $value['cf_1167'] ?? "",
+//                "description" => $value['cf_1167'] ?? "",
+                "province_id" =>   $provinces[$province],
+                "crm_id" =>   $value['id'] ?? "",
+                "is_tp" =>   $value['cf_1221'] ?? "",
+            ];
+        }
+//        DB::table('talents')->insert($insertedTalents);
+//        return $insertedTalents;
+            
         return true;
     }
 
-    public function fetchExportFile()
+    function saveDataToExcel($data, $headers): string
     {
-        $queryParams = [
-            'module' => 'Reports',
-            'view' => 'ExportReport',
-            'mode' => 'GetXLS',
-            'record' => '230',
-        ];
-        $url = $this->credentials["base_url"] . 'tog_apps/get_talent_pool_data.php';
-//        $url = 'http://localhost:8000/tog_apps/get_talent_pool_data.php';
-        $response = Http::withBasicAuth($this->credentials['username'], $this->credentials['password'])
-            ->get($url, $queryParams);
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
 
-        if ($response->failed()) {
-            echo @$response->json()["error"]["message"] ?? "ERROR: FAILED";
-            return false;
+        // Set column headers (if needed)
+        $column = 'A';
+        foreach ($headers as $header) {
+            $sheet->setCellValue($column . '1', $header);
+            ++$column;
         }
-        $csvData = $response->body();
-        // Process the CSV data or save it to a file
-        // For example, save to a file named 'exported_data.csv'
-        file_put_contents('exported_data.csv', $csvData);
-        return 'CSV exported successfully!';
-//        echo json_encode($response->body());
-//        return @$response->json();
+        $styleArray = [
+            'font' => [
+                'bold' => true,
+                'color' => [
+                    'rgb' => 'FF8000', // Red color, you can use other RGB values
+                ],
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => [
+                    'rgb' => 'FFFDF6', // You can replace COLOR_BLUE with your desired color
+                ],
+            ],
+        ];
+        $column = --$column;
+        $sheet->getStyle('A1:' . $column . '1')->applyFromArray($styleArray);
+// Write data to the cells
+        $row = 2;
+        foreach ($data as $row_data) {
+            $column = 'A';
+            foreach ($row_data as $value) {
+                $sheet->setCellValue($column . $row, $value);
+                $column++;
+            }
+            $row++;
+        }
+        $this->setFormat($sheet, $row);
+// Save the Excel file
+        $writer = new Xlsx($spreadsheet);
+        $fileName = "data_" . date('dmY_His') . ".xlsx";
+        $file_path = public_path("upload/$fileName"); // Change the path as needed
+        $writer->save($file_path);
+
+        return $file_path; // Return the file path or any other indicator
+    }
+
+    public function setFormat($sheet, $row, $begin = 'A', $end = 'CP'): void
+    {
+        $sheet->getStyle($begin . "1:$end" . ($row - 1))->applyFromArray([
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['rgb' => '000000']
+                ],
+            ],
+            'alignment' => [
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+            ],
+            'font' => ['size' => 12,],
+        ]);
+
+    }
+
+    public function handleProvince($string)
+    {
+        $string = strtolower($string);
+        $patterns = ['province','city','province']; // Words to remove
+// Create a regular expression pattern to match any of the words in $patterns
+        $pattern = '/\b(' . implode('|', $patterns) . ')\b/i';
+// Remove matched words from the string
+        $result = preg_replace($pattern, '', $string);
+// Trim any extra spaces after removal
+        $result = trim(preg_replace('/\s+/', ' ', $result)) ?? '';
+        return ucwords(strtolower($result));
     }
 }

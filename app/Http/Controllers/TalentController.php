@@ -92,7 +92,8 @@ class TalentController extends Controller
 
     public function loadCRM(){
         $this->vtigerService->loadSession();
-        $data = @$this->vtigerService->getExport();
+        $data = $this->vtigerService->fetchExportFile();
+//        $data = @$this->vtigerService->getListTypes();
         return $data;
 //        return "DONE";
     }

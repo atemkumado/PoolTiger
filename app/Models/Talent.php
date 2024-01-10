@@ -20,6 +20,13 @@ class Talent extends Model
     use HasFactory;
 
     protected $table = 'talents';
+    public const ENGLISH_LEVEL_TITLE = [
+        'No English' => 0,
+        'Basic' => 5,
+        'Intermediate' => 10,
+        'Advanced' => 15,
+         'Fluently' => 20,
+    ];
     public const ENGLISH_LEVEL = [
         0 => 'No English',
         5 => 'Basic',
