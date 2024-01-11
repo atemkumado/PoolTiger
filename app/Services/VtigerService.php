@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Company;
 use App\Models\Location\Province;
 use App\Models\Talent;
 use Illuminate\Support\Facades\DB;
@@ -31,13 +32,13 @@ class VtigerService extends Service
 
     public function loadSession()
     {
-        $this->login();
-        $this->getSessionId();
+        $this->getToken();
+        $this->getSession();
 //        $this->getListTypes();
     }
 
     // store token and access key in cache
-    public function login()
+    public function getToken()
     {
         $data = [
             "operation" => "getchallenge",
@@ -64,7 +65,7 @@ class VtigerService extends Service
     }
 
 
-    public function getSessionId()
+    public function getSession(): bool
     {
         $accessKey = $this->getData(self::KEY_ACCESS_CACHE);
         $token = $this->getData(self::KEY_TOKEN_CACHE);
@@ -96,7 +97,7 @@ class VtigerService extends Service
     }
 
 
-    public function getLeadInfo()
+    public function getFieldInfo()
     {
         $response = Http::withBasicAuth($this->credentials['username'], $this->credentials['password'])
             ->get($this->credentials["get_leads_url"]);
@@ -110,7 +111,6 @@ class VtigerService extends Service
 
     public function getExport()
     {
-
         $queryParams = [
             'operation' => 'getReport',
             'sessionName' => $this->sessionName,
@@ -184,14 +184,20 @@ class VtigerService extends Service
         return $allRecords;
     }
 
-
+    const TALENT = 'talent';
+    const COMPANY = 'organization';
     /**
+     * Using Query Webservice to fetch Data from Vtiger Website
+     * 1. Save the response data to Excel file in public location
+     * 2. Validate and update Talent Pool Database
      * @throws Exception
+     * @author Long
      */
-    public function fetchExportFile()
+    public function fetchData()
     {
-        $info = $this->getLeadInfo(); // Get $field and $fieldMapping
-
+        $info = $this->getFieldInfo(); // Get $field and $fieldMapping
+//        echo json_encode($info, JSON_PRETTY_PRINT);
+//        die;
         if (!$info) {
             return false;
         }
@@ -201,67 +207,177 @@ class VtigerService extends Service
         foreach ($mappings as $key => $value) {
             $fieldMappings[$value] = $key;
         }
-//        echo json_encode($fieldMappings, JSON_PRETTY_PRINT);
 //        die;
         // GET LEAD DATA
-        $talentPoolField = $this->credentials['talentPoolField'];
+        $crmFields = config('services.lead_fields');
+
+        $talentPoolField = $crmFields['is_talent_pool'];
         $query = "SELECT * FROM Leads";
 //        $query = "SELECT * FROM Leads WHERE $talentPoolField != 0";
-        $data = $this->getDataQuery($query) ?? [];
+        $leads = $this->getDataQuery($query) ?? [];
 
-        if (count($data) == 0) {
+        if (count($leads) == 0) {
             return false;
         }
+
         // HANDLE HEADER
-        $headers = array_keys($data[0]);
+        $headers = array_keys($leads[0]);
 
         $convertedHeader = [];
         foreach ($headers as $value) {
             $convertedHeader[] = $fieldMappings[$value] ?? $value;
         }
 
-        $inserted = $this->updateTalents($data);
-        $this->saveDataToExcel($data, $convertedHeader);
+        $inserted = $this->processUpdate($leads);
+        $this->saveDataToExcel($leads, $convertedHeader);
         return $inserted;
     }
 
-    function updateTalents($data): array
+    function processUpdate($data): bool|array
+    {
+        $data = $this->normalize($data);
+        $this->updateTalents($data);
+        return $data;
+    }
+
+    function normalize($data): array
     {
         $insertedTalents = [];
         $provinces = [];
+        $companyIds = [];
+        $talentFields = config('services.lead_fields');
+        $companyFields = config('services.organization_fields');
+
         foreach ($data as $value) {
             // Handle Provinces
-            $province = $this->handleProvince((!$value['city']) ?  $value['cf_792'] : $value['city']);
-            if(!array_key_exists($province, $provinces)){
-                $provinces[$province] = Province::where('name_en',$province)->value('id') ?? '';
+            $province = (!$value[$talentFields['city']]) ? $value[$talentFields['province']] : $value[$talentFields['city']];
+            $province = $this->handleProvince($province);
+            $companyId = $value[$talentFields['company_id']];
+            if (!in_array($companyId, $companyIds)) {
+                $companyIds[] = $companyId;
             }
-
+            if (!array_key_exists($province, $provinces)) {
+                $provinces[$province] = Province::where('name_en', $province)->value('id') ?? null;
+            }
             // Build data
             $insertedTalents[] = [
-                "firstname" => @$value['firstname'],
-                "lastname" => @$value['lastname'],
-                "lead_no" => @$value['lead_no'],
+                "firstname" => $value['firstname'],
+                "lastname" => $value['lastname'],
+                "lead_no" => $value['lead_no'],
                 "name" => $value['firstname'] . " " . $value['lastname'] ?? "",
                 "email" => $value['email'] ?? "",
-                "birthdate" => $value['cf_790'] ?? "",
-                "phone" => $value['mobile'] ?? "",
-                "english" => Talent::ENGLISH_LEVEL_TITLE[$value['cf_1211']] ?? "",
-                "linkedin" => $value['cf_1097'] ?? "",
-//                "facebook" => $value['firstname'],
-//                "github" => $value['firstname'],
-                "salary" => $value['cf_842'] ?? "",
-                "expect" => $value['cf_866'] ?? "",
-                "experience" => $value['cf_1167'] ?? "",
-//                "description" => $value['cf_1167'] ?? "",
-                "province_id" =>   $provinces[$province],
-                "crm_id" =>   $value['id'] ?? "",
-                "is_tp" =>   $value['cf_1221'] ?? "",
+                "birthdate" => $value[$talentFields['birthdate']] ?? "",
+                "phone" => $value[$talentFields['phone']] ?? "",
+                "english" => Talent::ENGLISH_LEVEL_TITLE[$value[$talentFields['english']]] ?? "",
+                "linkedin" => $value[$talentFields['linkedin']] ?? "",
+                "company_id" => $value[$talentFields['company_id']] ?? "",
+//                "facebook" => $value['facebook'],
+//                "github" => $value['github'],
+                "salary" => $value[$talentFields['salary']] ?? "",
+                "expect" => $value[$talentFields['expect']] ?? "",
+                "experience" => $value[$talentFields['experience']] ?? "",
+//                "description" =>  $value[$talentFields['description']] ?? "",
+                "province_id" => $provinces[$province],
+                "crm_id" => $value[$talentFields['crm_id']] ?? "",
+                "is_talent_pool" => $value[$talentFields['is_talent_pool']] ?? "",
+            ];
+
+        }
+        // GET COMPANY BY VTIGER REST API
+        $companyIds = trim(implode(',', $companyIds),',');
+        $query = "SELECT * FROM Accounts WHERE id IN ( $companyIds )";
+        $companies = $this->getDataQuery($query) ?? [];
+        if (count($companies) == 0) {
+            return false;
+        }
+
+        $insertedCompany = [];
+        foreach ($companies as $value) {
+            $province = (!$value[$companyFields['city']]) ? $value[$companyFields['province']] : $value[$companyFields['city']];
+            $province = $this->handleProvince($province);
+            if (!array_key_exists($province, $provinces)) {
+                $provinces[$province] = Province::where('name_en', $province)->value('id') ?? null;
+            }
+            $insertedCompany[] = [
+                "name" => $value[$companyFields['name']],
+                "account_no" => $value[$companyFields['account_no']],
+                "phone" => $value[$companyFields['phone']],
+                "email" => $value[$companyFields['email']],
+                "website" => $value[$companyFields['website']],
+                "description" => $value[$companyFields['description']],
+                "province_id" => $provinces[$province],
+                "crm_id" => $value[$companyFields['crm_id']],
             ];
         }
-//        DB::table('talents')->insert($insertedTalents);
-//        return $insertedTalents;
-            
-        return true;
+        return [
+            self::TALENT => $insertedTalents,
+            self::COMPANY => $insertedCompany
+        ];
+    }
+    function updateTalents($data): void
+    {
+        $talents = $data[self::TALENT];
+        $companies = $data[self::COMPANY];
+//        echo json_encode($companies, JSON_PRETTY_PRINT); die;
+
+        // HANDLE COMPANY
+        try {
+            // Start a database transaction
+            DB::beginTransaction();
+            // Assume $dataList is the list of data to be validated, updated, or deleted
+
+            foreach ($companies as $company) {
+                // Validate data against the database table
+                $existingRecord = Company::where('crm_id', $company['crm_id'])->first();
+                if ($existingRecord) {
+                    $existingRecord->update($company); // Replace with your update logic
+                } else {
+                    Company::create($company);
+                }
+            }
+            $deletedCompanyIds = Company::whereNotIn('crm_id', array_column($companies, 'crm_id'))->pluck('id');
+            foreach ($deletedCompanyIds as $companyId) {
+                Talent::where('company_id', $companyId)->delete();
+            }
+            Company::whereIn('id', $deletedCompanyIds)->delete();
+            // Commit the transaction if everything is successful
+            DB::commit();
+
+        } catch (\Exception $e) {
+//             Handle exceptions, log errors, or roll back the transaction on failure
+            DB::rollBack();
+            throw new \Exception("Error: $e.");
+        }
+
+
+        // HANDLE TALENTS
+        try {
+            // Start a database transaction
+            DB::beginTransaction();
+            // Assume $dataList is the list of data to be validated, updated, or deleted
+
+            foreach ($talents as $talent) {
+                $companyId = Company::where('crm_id', $talent['company_id'])->value('id') ?? NULL;
+                // Validate data against the database table
+                $talent['company_id'] = $companyId;
+                $existingRecord = Talent::where('crm_id', $talent['crm_id'])->first();
+                if ($existingRecord) {
+                    $existingRecord->update($talent); // Replace with your update logic
+                } else {
+                    Talent::create($talent);
+                }
+            }
+            Talent::whereNotIn('crm_id', array_column($talents, 'crm_id'))->delete();
+            // Commit the transaction if everything is successful
+            DB::commit();
+
+        } catch (\Exception $e) {
+//             Handle exceptions, log errors, or roll back the transaction on failure
+            DB::rollBack();
+            throw new \Exception("Error: $e.");
+        }
+
+
     }
 
     function saveDataToExcel($data, $headers): string
@@ -332,7 +448,7 @@ class VtigerService extends Service
     public function handleProvince($string)
     {
         $string = strtolower($string);
-        $patterns = ['province','city','province']; // Words to remove
+        $patterns = ['province', 'city']; // Words to remove
 // Create a regular expression pattern to match any of the words in $patterns
         $pattern = '/\b(' . implode('|', $patterns) . ')\b/i';
 // Remove matched words from the string

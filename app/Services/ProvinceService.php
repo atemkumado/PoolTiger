@@ -50,9 +50,13 @@ class ProvinceService
 
     public static function get3ProvincesStatistic(): array
     {
-        $statistic = Province::selectRaw('provinces.id, provinces.name, count(*) as count')
-            ->join('talents', 'provinces.id', '=', 'talents.province_id')
-            ->whereIn('province_id', array_values(Province::ID))
+        $statistic = Province::selectRaw('
+            provinces.id,
+            provinces.name,
+            SUM(IF(talents.province_id IS NOT NULL, 1, 0)) AS count'
+        )
+            ->leftjoin('talents', 'provinces.id', '=', 'talents.province_id')
+            ->whereIn('provinces.id', array_values(Province::ID))
             ->groupBy('provinces.id', 'provinces.name')
             ->get()->keyBy->id->toArray();
 
@@ -64,7 +68,7 @@ class ProvinceService
             'name' => 'Other',
             'count' => $otherCount
         ];
-        Log::debug('INIT');
+        Log::debug($statistic);
         return $statistic;
     }
 }

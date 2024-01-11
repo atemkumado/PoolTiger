@@ -13,6 +13,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Company extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        "id",
+        "name",
+        "description",
+        "province_id",
+        "district_id",
+        "ward_id",
+        "created_at",
+        "updated_at",
+        "crm_id",
+        "account_no",
+        "website",
+        "email",
+        "phone"
+    ];
 
     public function province(): BelongsTo
     {

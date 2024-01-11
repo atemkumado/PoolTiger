@@ -2,25 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\EnglishLevel;
-use App\Http\Resources\TalentResource;
-use App\Http\Resources\TalentResourceCollection;
-use App\Models\Location\Province;
-use App\Models\Position;
-use App\Models\Skill;
+
 use App\Models\Talent;
 use App\Http\Requests\TalentRequest;
 use App\Services\ProvinceService;
 use App\Services\TalentService;
-use App\Models\User;
 use App\Services\VtigerService;
 use Barryvdh\Debugbar\Facades\Debugbar;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Request;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Support\Facades\Schema;
 
 class TalentController extends Controller
 {
@@ -49,7 +40,6 @@ class TalentController extends Controller
         return response()->json(['data' => $data]);
     }
 
-    public $data;
     public function viewMore()
     {
         $talents = $this->talentService->getData();
@@ -83,18 +73,21 @@ class TalentController extends Controller
             }
         ])->findOrFail($id);
         $talent['english'] = @Talent::ENGLISH_LEVEL[$talent['english']];
-//        return view('talents.detail',['talent' => new TalentResource($talent) ]);
-//        return $talent;
         return view('talents.detail', compact('talent'));
     }
 
 
 
     public function loadCRM(){
+//        $columns = Schema::getColumnListing('companies');
+//        echo json_encode($columns, JSON_PRETTY_PRINT);
+//        die;
         $this->vtigerService->loadSession();
-        $data = $this->vtigerService->fetchExportFile();
+//        $data = $this->vtigerService->getDataQuery("SELECT * FROM Accounts");
+        $data = $this->vtigerService->fetchData();
 //        $data = @$this->vtigerService->getListTypes();
-        return $data;
+        echo json_encode($data,JSON_PRETTY_PRINT);
+        return true;
 //        return "DONE";
     }
 }

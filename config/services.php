@@ -31,9 +31,34 @@ return [
         'get_leads_url' => $crm . 'tog_apps/get_leads_data_info.php',
         'get_webservice_url' => $crm . 'webservice.php',
         'accessKey'=> "4itWgheHtEDDRKda",
-        'talentPoolField'=> "cf_1221",
 //        'accessKey'=> "fPPIsCmerE6ZVft3"
 
+    ],
+    'lead_fields' =>[
+        'is_talent_pool'=> "cf_1221",
+        'phone' => 'mobile',
+        'province' => 'cf_792',
+        'city' => 'city',
+        'birthdate' => 'cf_790',
+        'company_id' => 'company',
+        'english' => 'cf_1211',
+        'linkedin' => 'cf_1097',
+        'salary' => 'cf_842',
+        'expect' => 'cf_866',
+        'experience' => 'cf_1167',
+        'description' => 'cf_1167',
+        'crm_id' => 'id',
+    ],
+    'organization_fields' =>[
+        'name'=> "accountname",
+        'account_no' => 'account_no',
+        'phone' => 'phone',
+        'email' => 'email1',
+        'website' => 'website',
+        'description' => 'description',
+        'city' => 'bill_city',
+        'province' => 'cf_788',
+        'crm_id' => 'id',
     ],
 
     'postmark' => [

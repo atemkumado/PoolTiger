@@ -19,13 +19,40 @@ class Talent extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        "id",
+        "firstname",
+        "lastname",
+        "lead_no",
+        "name",
+        "email",
+        "birthdate",
+        "phone",
+        "english",
+        "linkedin",
+        "facebook",
+        "github",
+        "company_id",
+        "salary",
+        "expect",
+        "experience",
+        "province_id",
+        "district_id",
+        "ward_id",
+        "avatarName",
+        "avatarUrl",
+        "created_at",
+        "updated_at",
+        "crm_id",
+        "is_talent_pool"
+    ];
     protected $table = 'talents';
     public const ENGLISH_LEVEL_TITLE = [
         'No English' => 0,
         'Basic' => 5,
         'Intermediate' => 10,
         'Advanced' => 15,
-         'Fluently' => 20,
+        'Fluently' => 20,
     ];
     public const ENGLISH_LEVEL = [
         0 => 'No English',

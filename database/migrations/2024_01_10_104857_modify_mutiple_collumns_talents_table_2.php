@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('talents', function (Blueprint $table) {
             $table->string("crm_id",21)->nullable();
-            $table->boolean("is_tp")->nullable();
+            $table->boolean("is_talent_pool")->nullable();
             $table->dropUnique(['email']);
         });
     }
@@ -25,7 +25,7 @@ return new class extends Migration
     {
         Schema::table('talents', function (Blueprint $table) {
             $table->dropColumn("crm_id");
-            $table->dropColumn("is_tp");
+            $table->dropColumn("is_talent_pool");
             $table->unique(['email']);
         });
     }

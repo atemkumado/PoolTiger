@@ -9,13 +9,13 @@
                     <div class="" style="display: block">
                         <div class="profile-name">
                             <h4>{{$talent['name']}}</h4>
-                                <h6>{{$talent['company']['name']}} - {{$talent['province']['name']}}, Viet Nam</h6>
+                                <h6>{{@$talent['company']['name']}} - {{@$talent['province']['name']}}, Viet Nam</h6>
                         </div>
                         <div class="profile-social">
                             <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-linkedin"></i></a>
                             <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-github"></i></a>
-                            <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-briefcase"></i></a>
-                            <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-facebook-f"></i></a>
+{{--                            <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-briefcase"></i></a>--}}
+{{--                            <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-facebook-f"></i></a>--}}
                         </div>
                     </div>
                 </div>
@@ -27,15 +27,16 @@
                     <table class="table table-bordered">
                         <tr>
                             <th width="30%">First name</th>
-                            <td>{{$talent['name']}}</td>
+                            <td>{{@$talent['firstname']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">Last name</th>
-                            <td></td>
+                            <td>{{@$talent['lastname']}}</td>
+
                         </tr>
                         <tr>
                             <th width="30%">Date of Birth</th>
-                            <td></td>
+                            <td>{{$talent['birthdate']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">Years Of Experience</th>
@@ -43,35 +44,35 @@
                         </tr>
                         <tr>
                             <th width="30%">Position Title</th>
-                            <td>{{$talent['position'][0]['name']}}</td>
+                            <td>{{@$talent['position'][0]['name']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">Top 1</th>
-                            <td>{{$talent['skill'][0]['name']}}</td>
+                            <td>{{@$talent['skill'][0]['name']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">Notice</th>
-                            <td>{{$talent['skill'][0]['describe']}}</td>
+                            <td>{{@$talent['skill'][0]['describe']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">Expected Salary</th>
-                            <td>{{$talent['expect']}}</td>
+                            <td>{{@$talent['expect']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">Salary</th>
-                            <td>{{$talent['salary']}}</td>
+                            <td>{{@$talent['salary']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">City</th>
-                            <td>{{$talent['province']['name']}}</td>
+                            <td>{{@$talent['province']['name']}}</td>
                         </tr>
                         <tr>
                             <th width="30%">District</th>
-                            <td>{{$talent['district']['name']}}</td>
+                            <td>{{@$talent['district']['name']}}</td>
                         </tr>
                         <tr>
                             <th width="30%"> English Level</th>
-                            <td>{{ $talent['english'] }}</td>
+                            <td>{{ @$talent['english'] }}</td>
                         </tr>
                     </table>
                 </div>
