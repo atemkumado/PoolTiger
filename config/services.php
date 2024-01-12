@@ -47,6 +47,8 @@ return [
         'expect' => 'cf_866',
         'experience' => 'cf_1167',
         'description' => 'cf_1167',
+        'skill' => 'cf_1155',
+        'position' => 'cf_826',
         'crm_id' => 'id',
     ],
     'organization_fields' =>[

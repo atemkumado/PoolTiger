@@ -49,17 +49,18 @@ class TalentController extends Controller
 
     public function list(TalentRequest $selected)
     {
-        $keyCache = json_encode([self::KEY_FILTER_CACHE, $selected->toArray()]);
-//      Check if data exists in the cache
-        if (Cache::has($keyCache)) {
-            // Data exists in the cache
-            $talents = Cache::get($keyCache);
-        } else {
-            $talents = Cache::remember($keyCache, now()->addHours(), function () use ($selected) {
-                return $this->talentService->getTalents($selected);
-            });
-        }
-        Debugbar::info($talents );
+//        $keyCache = json_encode([self::KEY_FILTER_CACHE, $selected->toArray()]);
+////      Check if data exists in the cache
+//        if (Cache::has($keyCache)) {
+//            // Data exists in the cache
+//            $talents = Cache::get($keyCache);
+//        } else {
+//            $talents = Cache::remember($keyCache, now()->addHours(), function () use ($selected) {
+//                die;
+                $talents =  $this->talentService->getTalents($selected);
+//            });
+//        }
+        Debugbar::info($talents);
         $this->talentService->storeData($talents);
         // Redirect to the form view with a success message
         return view('talents.list', compact(['selected', 'talents']));
@@ -78,14 +79,10 @@ class TalentController extends Controller
 
 
 
-    public function loadCRM(){
-//        $columns = Schema::getColumnListing('companies');
-//        echo json_encode($columns, JSON_PRETTY_PRINT);
-//        die;
+    public function crm(){
         $this->vtigerService->loadSession();
-//        $data = $this->vtigerService->getDataQuery("SELECT * FROM Accounts");
+////        $data = $this->vtigerService->getDataQuery("SELECT * FROM Accounts");
         $data = $this->vtigerService->fetchData();
-//        $data = @$this->vtigerService->getListTypes();
         echo json_encode($data,JSON_PRETTY_PRINT);
         return true;
 //        return "DONE";

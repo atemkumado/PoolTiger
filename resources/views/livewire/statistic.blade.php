@@ -16,7 +16,7 @@
 
     <div wire:ignore.self class="modal fade" id="talent-modal" tabindex="1" aria-labelledby="talentModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
             <div class="modal-content" style="width: max-content; height: 80%">
                 <div class="modal-header" style="background-color: rgba(255,178,126,0.47)">
                     <h6 class="modal-title" style="padding-left: 10px"><strong>Talents</strong></h6>
@@ -25,7 +25,7 @@
                     </button>
                 </div>
                 <div class="modal-body" style="min-height: 400px; height: 80%">
-                        @if(!is_null($list))
+
                             <table id="talent-table" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
                                 <tr>
@@ -46,9 +46,7 @@
                                 </tbody>
                             </table>
 
-                        @else
-                            <em>Loading.....</em>
-                        @endif
+
                 </div>
                 <div class="modal-footer" style="min-height: 40px">
                     {{--                                    <button type="button" class="btn btn-secondary" wire:click="closeModal"--}}
@@ -115,7 +113,9 @@
                         },
                         "columns": [
                             { "data": "no" },
-                            { "data": "name" },
+                            { data: 'name', name: 'name', render: function (data, type, row) {
+                                    return '<a href="/detail/' + row.id + '">' + data + '</a>';
+                                }},
                             { "data": "email" },
                             { "data": "phone" },
                             { "data": "company_name" },

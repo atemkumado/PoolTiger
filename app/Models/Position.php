@@ -9,7 +9,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Position extends Model
 {
     use HasFactory;
-
+    protected $fillable = [
+        "id",
+        "name"
+    ];
     public function talent(): BelongsToMany
     {
         return $this->belongsToMany(Talent::class, 'talent_position');

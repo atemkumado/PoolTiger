@@ -60,7 +60,7 @@ class ProvinceService
             ->groupBy('provinces.id', 'provinces.name')
             ->get()->keyBy->id->toArray();
 
-        $otherCount = Talent::count() - $statistic[Province::ID['ha_noi']]['count'] - $statistic[Province::ID['da_nang']]['count']
+        $otherCount = Talent::whereHas('province')->count() - $statistic[Province::ID['ha_noi']]['count'] - $statistic[Province::ID['da_nang']]['count']
             - $statistic[Province::ID['ho_chi_minh']]['count'];
 
         $statistic[0] = [

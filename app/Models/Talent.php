@@ -64,7 +64,7 @@ class Talent extends Model
 
     public function skill(): BelongsToMany
     {
-        return $this->belongsToMany(Skill::class, 'talent_skill');
+        return $this->belongsToMany(Skill::class, 'talent_skill')->withPivot('is_best');
     }
 
     public function position(): BelongsToMany

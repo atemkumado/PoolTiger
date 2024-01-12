@@ -24,11 +24,4 @@ class Statistic extends Component
         return view('livewire.statistic');
     }
 
-    public $list = [];
-    public function setProvinceId($provinceId = 0)
-    {
-        // Your data fetching logic
-        $this->list = app(ProvinceService::class)->getProvinceTalents($provinceId) ;
-        Debugbar::info($this->list);
-    }
 }

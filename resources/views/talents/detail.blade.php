@@ -9,10 +9,18 @@
                     <div class="" style="display: block">
                         <div class="profile-name">
                             <h4>{{$talent['name']}}</h4>
-                                <h6>{{@$talent['company']['name']}} - {{@$talent['province']['name']}}, Viet Nam</h6>
+                            @if($talent['company_name'])
+                                    {{$talent['company_name']}}
+                                    @if($talent['province_company_name'])
+                                        - {{$talent['province_company_name']}}
+                                    @endif
+                                    , Viet Nam
+                                </div>
+                            @endif
+{{--                                <h6>{{@$talent['company']['name']}} - {{@$talent['province']['name']}}, Viet Nam</h6>--}}
                         </div>
                         <div class="profile-social">
-                            <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-linkedin"></i></a>
+                            <a href="{{@$talent['linkedin']}}" class="mr-4" target="_blank"><i class="fa fa-linkedin"></i></a>
                             <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-github"></i></a>
 {{--                            <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-briefcase"></i></a>--}}
 {{--                            <a href="fb.com" class="mr-4" target="_blank"><i class="fa fa-facebook-f"></i></a>--}}
@@ -36,7 +44,7 @@
                         </tr>
                         <tr>
                             <th width="30%">Date of Birth</th>
-                            <td>{{$talent['birthdate']}}</td>
+                            <td>{{date('d-m-Y',strtotime($talent['birthdate']))}}</td>
                         </tr>
                         <tr>
                             <th width="30%">Years Of Experience</th>

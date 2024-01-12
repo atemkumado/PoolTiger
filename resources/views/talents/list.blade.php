@@ -113,11 +113,18 @@
                                     <a class="talent-btn "
                                        href="{{ route('talents.detail', ['id'=>$talent['id']]) }}"><i
                                             class="fa fa-search"></i></a>
-                                    <div class="talent-body">
-                                        <h5 class="mt-0 mb-1"><strong>{{$talent['name']}}</strong></h5>
-                                        <div class="talent-company">
-                                            {{$talent['company_name']}} - {{$talent['province_company_name']}}, Viet Nam
-                                        </div>
+                                    <div class="talent-body" style ="{{ $talent['company_name'] ? '' : '
+                                        display: flex; align-items: center;'}}">
+                                        <h5 class="mt-0 mb-1" style="  margin: auto;"><strong>{{$talent['name']}}</strong></h5>
+                                        @if($talent['company_name'])
+                                            <div class="talent-company">
+                                                {{$talent['company_name']}}
+                                                @if($talent['province_company_name'])
+                                                - {{$talent['province_company_name']}}
+                                                @endif
+                                                , Viet Nam
+                                            </div>
+                                        @endif
 
                                     </div>
                                 </li>
@@ -125,7 +132,7 @@
                             @endforeach
                             <li class="talent">
                                 <div class="talent-body mt-4">
-                                    <a href ="" type="button" data-bs-toggle="modal" class="view-talents"
+                                    <a href="" type="button" data-bs-toggle="modal" class="view-talents"
                                        data-bs-target="#talent-modal">
                                         View more ...
                                     </a>

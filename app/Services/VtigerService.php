@@ -4,7 +4,11 @@ namespace App\Services;
 
 use App\Models\Company;
 use App\Models\Location\Province;
+use App\Models\Position;
+use App\Models\Skill;
 use App\Models\Talent;
+use App\Models\TalentSkill;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -30,9 +34,10 @@ class VtigerService extends Service
 
     }
 
-    public function loadSession()
+    public function loadSession(): void
     {
-        $this->getToken();
+        $isToken = $this->getToken();
+        if (!$isToken) exit;
         $this->getSession();
 //        $this->getListTypes();
     }
@@ -51,7 +56,7 @@ class VtigerService extends Service
         // Check if the request was successful
         if ($response->failed() || !@$response->json()["success"]) {
             echo @$response->json()["error"]["message"] ?? "ERROR: LOGIN FAILED";
-            return $response->status();
+            return false;
         }
 
         // Assuming the response is JSON
@@ -186,6 +191,9 @@ class VtigerService extends Service
 
     const TALENT = 'talent';
     const COMPANY = 'organization';
+    const SKILL = 'skill';
+    const POSITION = 'position';
+
     /**
      * Using Query Webservice to fetch Data from Vtiger Website
      * 1. Save the response data to Excel file in public location
@@ -233,18 +241,25 @@ class VtigerService extends Service
         return $inserted;
     }
 
+    /**
+     * @throws \Exception
+     */
     function processUpdate($data): bool|array
     {
         $data = $this->normalize($data);
+//        echo json_encode($data, JSON_PRETTY_PRINT); die;
+
         $this->updateTalents($data);
         return $data;
     }
 
-    function normalize($data): array
+    function normalize($data): array|bool
     {
         $insertedTalents = [];
         $provinces = [];
         $companyIds = [];
+        $skillIds = [];
+        $positionIds = [];
         $talentFields = config('services.lead_fields');
         $companyFields = config('services.organization_fields');
 
@@ -253,6 +268,14 @@ class VtigerService extends Service
             $province = (!$value[$talentFields['city']]) ? $value[$talentFields['province']] : $value[$talentFields['city']];
             $province = $this->handleProvince($province);
             $companyId = $value[$talentFields['company_id']];
+            $skillId = $value[$talentFields['skill']];
+            $positionId = $value[$talentFields['position']];
+            if (!in_array($positionId, $positionIds)) {
+                $positionIds[] = $positionId;
+            }
+            if (!in_array($skillId, $skillIds)) {
+                $skillIds[] = $skillId;
+            }
             if (!in_array($companyId, $companyIds)) {
                 $companyIds[] = $companyId;
             }
@@ -276,6 +299,8 @@ class VtigerService extends Service
                 "salary" => $value[$talentFields['salary']] ?? "",
                 "expect" => $value[$talentFields['expect']] ?? "",
                 "experience" => $value[$talentFields['experience']] ?? "",
+                "skill" => $skillId ?? "",
+                "position" => $positionId ?? "",
 //                "description" =>  $value[$talentFields['description']] ?? "",
                 "province_id" => $provinces[$province],
                 "crm_id" => $value[$talentFields['crm_id']] ?? "",
@@ -284,7 +309,7 @@ class VtigerService extends Service
 
         }
         // GET COMPANY BY VTIGER REST API
-        $companyIds = trim(implode(',', $companyIds),',');
+        $companyIds = trim(implode(',', $companyIds), ',');
         $query = "SELECT * FROM Accounts WHERE id IN ( $companyIds )";
         $companies = $this->getDataQuery($query) ?? [];
         if (count($companies) == 0) {
@@ -311,16 +336,17 @@ class VtigerService extends Service
         }
         return [
             self::TALENT => $insertedTalents,
-            self::COMPANY => $insertedCompany
+            self::COMPANY => $insertedCompany,
+            self::SKILL => $skillIds,
+            self::POSITION=> $positionIds
         ];
     }
-    function updateTalents($data): void
-    {
-        $talents = $data[self::TALENT];
-        $companies = $data[self::COMPANY];
-//        echo json_encode($companies, JSON_PRETTY_PRINT); die;
 
-        // HANDLE COMPANY
+    /**
+     * @throws \Exception
+     */
+    private function handleCompany($companies): void
+    {
         try {
             // Start a database transaction
             DB::beginTransaction();
@@ -330,13 +356,19 @@ class VtigerService extends Service
                 // Validate data against the database table
                 $existingRecord = Company::where('crm_id', $company['crm_id'])->first();
                 if ($existingRecord) {
+                    Debugbar::info("UPDATE COMPANY");
+                    Debugbar::info($company);
                     $existingRecord->update($company); // Replace with your update logic
                 } else {
+                    Debugbar::info("INSERT COMPANY");
+                    Debugbar::info($company);
                     Company::create($company);
                 }
             }
             $deletedCompanyIds = Company::whereNotIn('crm_id', array_column($companies, 'crm_id'))->pluck('id');
+            Debugbar::info("DELETE COMPANY");
             foreach ($deletedCompanyIds as $companyId) {
+                Debugbar::info($companyId);
                 Talent::where('company_id', $companyId)->delete();
             }
             Company::whereIn('id', $deletedCompanyIds)->delete();
@@ -348,9 +380,10 @@ class VtigerService extends Service
             DB::rollBack();
             throw new \Exception("Error: $e.");
         }
+    }
 
-
-        // HANDLE TALENTS
+    private function handleTalent($talents): void
+    {
         try {
             // Start a database transaction
             DB::beginTransaction();
@@ -358,14 +391,37 @@ class VtigerService extends Service
 
             foreach ($talents as $talent) {
                 $companyId = Company::where('crm_id', $talent['company_id'])->value('id') ?? NULL;
+                $skillId = Skill::where('name', $talent['skill'])->value('id') ?? NULL;
+                $positionId = Position::where('name', $talent['position'])->value('id') ?? NULL;
+
                 // Validate data against the database table
                 $talent['company_id'] = $companyId;
+                $talent['skill_id'] = $skillId;
                 $existingRecord = Talent::where('crm_id', $talent['crm_id'])->first();
                 if ($existingRecord) {
+                    Debugbar::info("UPDATE TALENT");
+                    Debugbar::info($talent);
                     $existingRecord->update($talent); // Replace with your update logic
+                    // CHECK EXIST SKILL IN TALENT
+                    if ($existingRecord->skill->contains($skillId)) {
+                        $existingRecord->skill()->updateExistingPivot($skillId, ['is_best' => true]);
+                    } else {
+                        $existingRecord->skill()->attach($skillId, ['is_best' => true]);
+                    }
+                    if ($existingRecord->position->contains($positionId)) {
+                        $existingRecord->position()->sync($positionId);
+                    } else {
+                        $existingRecord->position()->attach($positionId);
+                    }
+
                 } else {
-                    Talent::create($talent);
+                    Debugbar::info("INSERT TALENT");
+                    Debugbar::info($talent);
+                    $talentId =Talent::create($talent)->id;
+                    $newTalent = Talent::find($talentId);
+                    $newTalent->skill()->attach($skillId, ['is_best' => true]);
                 }
+
             }
             Talent::whereNotIn('crm_id', array_column($talents, 'crm_id'))->delete();
             // Commit the transaction if everything is successful
@@ -376,6 +432,80 @@ class VtigerService extends Service
             DB::rollBack();
             throw new \Exception("Error: $e.");
         }
+    }
+
+    private function handleSkill($skills): void
+    {
+//        echo  json_encode($skills, JSON_PRETTY_PRINT); die;
+        try {
+            // Start a database transaction
+            DB::beginTransaction();
+            // Assume $dataList is the list of data to be validated, updated, or deleted
+            foreach ($skills as $skillName) {
+                if(!$skillName) continue;
+                $skillId = Skill::where('name', $skillName)->value('id') ?? NULL;
+                // Validate data against the database table
+                if (!$skillId) {
+                    Debugbar::info("INSERT SKILL");
+                    Debugbar::info($skillName);
+                    $skillName = ['name' => $skillName];
+                    Skill::create($skillName);
+                }
+            }
+            Skill::whereNotIn('name', $skills)->delete();
+            // Commit the transaction if everything is successful
+            DB::commit();
+
+        } catch (\Exception $e) {
+//             Handle exceptions, log errors, or roll back the transaction on failure
+            DB::rollBack();
+            throw new \Exception("Error: $e.");
+        }
+    }
+
+    private function handlePosition($positions): void
+    {
+//        echo  json_encode($skills, JSON_PRETTY_PRINT); die;
+        try {
+            // Start a database transaction
+            DB::beginTransaction();
+            // Assume $dataList is the list of data to be validated, updated, or deleted
+            foreach ($positions as $positionName) {
+                if(!$positionName) continue;
+                $skillId = Position::where('name', $positionName)->value('id') ?? NULL;
+                // Validate data against the database table
+                if (!$skillId) {
+                    Debugbar::info("INSERT SKILL");
+                    Debugbar::info($positionName);
+                    $positionName = ['name' => $positionName];
+                    Position::create($positionName);
+                }
+            }
+            Position::whereNotIn('name', $positions)->delete();
+            // Commit the transaction if everything is successful
+            DB::commit();
+
+        } catch (\Exception $e) {
+//             Handle exceptions, log errors, or roll back the transaction on failure
+            DB::rollBack();
+            throw new \Exception("Error: $e.");
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    function updateTalents($data): void
+    {
+//        echo json_encode($data, JSON_PRETTY_PRINT); die;
+        // HANDLE SKILL
+        $this->handleSkill($data[self::SKILL]);
+        // HANDLE POSITION
+        $this->handlePosition($data[self::POSITION]);
+        // HANDLE COMPANY
+        $this->handleCompany($data[self::COMPANY]);
+        // HANDLE TALENTS
+        $this->handleTalent($data[self::TALENT]);
 
 
     }
@@ -407,7 +537,7 @@ class VtigerService extends Service
         ];
         $column = --$column;
         $sheet->getStyle('A1:' . $column . '1')->applyFromArray($styleArray);
-// Write data to the cells
+        // Write data to the cells
         $row = 2;
         foreach ($data as $row_data) {
             $column = 'A';
@@ -418,7 +548,7 @@ class VtigerService extends Service
             $row++;
         }
         $this->setFormat($sheet, $row);
-// Save the Excel file
+        // Save the Excel file
         $writer = new Xlsx($spreadsheet);
         $fileName = "data_" . date('dmY_His') . ".xlsx";
         $file_path = public_path("upload/$fileName"); // Change the path as needed
@@ -449,12 +579,14 @@ class VtigerService extends Service
     {
         $string = strtolower($string);
         $patterns = ['province', 'city']; // Words to remove
-// Create a regular expression pattern to match any of the words in $patterns
+        // Create a regular expression pattern to match any of the words in $patterns
         $pattern = '/\b(' . implode('|', $patterns) . ')\b/i';
-// Remove matched words from the string
+        // Remove matched words from the string
         $result = preg_replace($pattern, '', $string);
-// Trim any extra spaces after removal
+        // Trim any extra spaces after removal
         $result = trim(preg_replace('/\s+/', ' ', $result)) ?? '';
         return ucwords(strtolower($result));
     }
+
+
 }

@@ -10,12 +10,18 @@ class Skill extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        "id",
+        "name"
+    ];
+
     public function talent(): BelongsToMany
     {
-        return $this->belongsToMany(Talent::class, 'talent_skill');
+        return $this->belongsToMany(Talent::class, 'talent_skill')->withPivot('is_best');
     }
+
     public function getBestSkill()
     {
-        return $this->where('is_best',true)->limit(1);
+        return $this->where('is_best', true)->limit(1);
     }
 }
