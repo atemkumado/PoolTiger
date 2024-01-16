@@ -19,27 +19,7 @@ use App\Http\Controllers\TalentController;
 |
 */
 
-Route::get('/typelist', function () {
-    $service = app(VtigerService::class);
-    $service->loadSession();
-    $data = $service->getListTypes();
-    echo json_encode($data, JSON_PRETTY_PRINT);
-    return true;
-})->name('crm.typelists');
-
-Route::get('/crm', function () {
-    $service = app(VtigerService::class);
-    $service->loadSession();
-    $data = $service->fetchData();
-    echo json_encode($data, JSON_PRETTY_PRINT);
-    return true;
-})->name('crm.fetch');
-
-Route::get('/field-info', function () {
-    $service = app(VtigerService::class);
-    $service->loadSession();
-    $data = $service->getFieldInfo();
-    echo json_encode($data, JSON_PRETTY_PRINT);
-    return true;
-})->name('crm.fields');
-
+Route::get('/type-list', [TalentController::class, 'getTypeList'])->name('crm.typelists');
+Route::get('/crm', [TalentController::class, 'crm'])->name('crm.fetch');
+Route::get('/field-info', [TalentController::class, 'getFieldList'])->name('crm.fields');
+Route::get('/module-query/{module}', [TalentController::class, 'getModuleQuery'])->name('crm.fields');

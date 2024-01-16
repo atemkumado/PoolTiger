@@ -9,6 +9,7 @@ use App\Services\ProvinceService;
 use App\Services\TalentService;
 use App\Services\VtigerService;
 use Barryvdh\Debugbar\Facades\Debugbar;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -77,14 +78,28 @@ class TalentController extends Controller
         return view('talents.detail', compact('talent'));
     }
 
+    public function getTypeList(): JsonResponse
+    {
+        $data = $this->vtigerService->getListTypes();
+        return response()->json($data, 200, [], JSON_PRETTY_PRINT);
+    }
 
-
-    public function crm(){
-        $this->vtigerService->loadSession();
-////        $data = $this->vtigerService->getDataQuery("SELECT * FROM Accounts");
+    public function crm(): JsonResponse
+    {
         $data = $this->vtigerService->fetchData();
-        echo json_encode($data,JSON_PRETTY_PRINT);
-        return true;
-//        return "DONE";
+        return response()->json($data, 200, [], JSON_PRETTY_PRINT);
+    }
+
+    public function getFieldList(): JsonResponse
+    {
+        $data = $this->vtigerService->getFieldInfo();
+        return response()->json($data, 200, [], JSON_PRETTY_PRINT);
+    }
+
+    public function getModuleQuery($module): JsonResponse
+    {
+        $module = trim(ucfirst($module));
+        $data = $this->vtigerService->getDataQuery("SELECT * FROM $module");
+        return response()->json($data, 200, [], JSON_PRETTY_PRINT);
     }
 }

@@ -28,10 +28,8 @@ class VtigerService extends Service
     public function __construct()
     {
         parent::__construct();
-
+        $this->loadSession();
         Log::debug("VTIGER SERVICE");
-
-
     }
 
     public function loadSession(): void
@@ -51,8 +49,7 @@ class VtigerService extends Service
         ];
         $url = $this->credentials['get_webservice_url'] . '?' . http_build_query($data);
 
-        $response = Http::withBasicAuth($this->credentials['username'], $this->credentials['password'])
-            ->get($url);
+        $response = Http::timeout(600)->get($url);
         // Check if the request was successful
         if ($response->failed() || !@$response->json()["success"]) {
             echo @$response->json()["error"]["message"] ?? "ERROR: LOGIN FAILED";
@@ -585,7 +582,7 @@ class VtigerService extends Service
         $result = preg_replace($pattern, '', $string);
         // Trim any extra spaces after removal
         $result = trim(preg_replace('/\s+/', ' ', $result)) ?? '';
-        return ucwords(strtolower($result));
+        return ucwords($result);
     }
 
 

@@ -3,7 +3,7 @@ FROM  php:8.2.4 as php
 RUN apt-get update -y
 RUN apt-get install -y unzip libpq-dev libcurl4-gnutls-dev
 RUN docker-php-ext-install pdo pdo_mysql bcmath
-RUN docker-php-ext-install -j$(nproc) mysql mysqli
+RUN docker-php-ext-install -j$(nproc) mysqli
 
 RUN pecl install -o -f redis \
     && rm -rf /tmp/pear \
