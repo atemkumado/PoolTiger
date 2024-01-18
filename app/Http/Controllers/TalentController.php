@@ -102,4 +102,11 @@ class TalentController extends Controller
         $data = $this->vtigerService->getDataQuery("SELECT * FROM $module");
         return response()->json($data, 200, [], JSON_PRETTY_PRINT);
     }
+
+    public function update(): JsonResponse
+    {
+        $data = $this->vtigerService->update();
+
+        return response()->json($data, 200, [], JSON_PRETTY_PRINT);
+    }
 }

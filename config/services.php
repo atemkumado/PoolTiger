@@ -30,6 +30,7 @@ return [
         'index_url' => $crm . 'index.php',
         'get_leads_url' => $crm . 'tog_apps/get_leads_data_info.php',
         'get_webservice_url' => $crm . 'webservice.php',
+        'get_export_data' => $crm . 'tog_apps/talent_pool/get_export_data.php',
         'accessKey'=> "4itWgheHtEDDRKda",
 //        'accessKey'=> "fPPIsCmerE6ZVft3"
 

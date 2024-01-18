@@ -200,22 +200,9 @@ class VtigerService extends Service
      */
     public function fetchData()
     {
-        $info = $this->getFieldInfo(); // Get $field and $fieldMapping
-//        echo json_encode($info, JSON_PRETTY_PRINT);
-//        die;
-        if (!$info) {
-            return false;
-        }
-        $field = $info['vtigerFieldArr'];
-        $mappings = $info['mappings'] ?? [];
-        $fieldMappings = [];
-        foreach ($mappings as $key => $value) {
-            $fieldMappings[$value] = $key;
-        }
-//        die;
-        // GET LEAD DATA
         $crmFields = config('services.lead_fields');
-
+        $fieldMappings = $this->getFields();
+        // GET LEAD DATA
         $talentPoolField = $crmFields['is_talent_pool'];
         $query = "SELECT * FROM Leads";
 //        $query = "SELECT * FROM Leads WHERE $talentPoolField != 0";
@@ -226,15 +213,16 @@ class VtigerService extends Service
         }
 
         // HANDLE HEADER
-        $headers = array_keys($leads[0]);
+//        $headers = array_keys($leads[0]);
 
-        $convertedHeader = [];
-        foreach ($headers as $value) {
-            $convertedHeader[] = $fieldMappings[$value] ?? $value;
-        }
+//        $convertedHeader = [];
+//        foreach ($headers as $value) {
+//            $convertedHeader[] = $fieldMappings[$value] ?? $value;
+//        }
 
+//        echo json_encode($leads, JSON_PRETTY_PRINT); die;
         $inserted = $this->processUpdate($leads);
-        $this->saveDataToExcel($leads, $convertedHeader);
+//        $this->saveDataToExcel($leads, $convertedHeader);
         return $inserted;
     }
 
@@ -583,6 +571,59 @@ class VtigerService extends Service
         // Trim any extra spaces after removal
         $result = trim(preg_replace('/\s+/', ' ', $result)) ?? '';
         return ucwords($result);
+    }
+
+    public function getExportData()
+    {
+        $response = Http::withBasicAuth($this->credentials['username'], $this->credentials['password'])
+            ->get($this->credentials["get_export_data"]);
+
+        if ($response->failed()) {
+            echo @$response->json()["error"]["message"] ?? "ERROR: FAILED";
+            return false;
+        }
+        return @$response->json();
+    }
+    public function getFields(){
+        $info = $this->getFieldInfo(); // Get $field and $fieldMapping
+//        echo json_encode($info, JSON_PRETTY_PRINT);
+//        die;
+        if (!$info) {
+            return false;
+        }
+        $mappings = $info['mappings'] ?? [];
+        $fieldMappings = [];
+        foreach ($mappings as $key => $value) {
+            $fieldMappings[$value] = $key;
+        }
+        return $fieldMappings;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function update(){
+        $data = $this->getExportData();
+        if (!$data) {
+            return false;
+        }
+        $headers = array_shift($data);
+
+        $importData = [];
+        foreach ($data as $row) {
+            $rowData = [];
+            foreach ($headers as $key => $header) {
+                // Ensure that the key exists in the current row
+                if (isset($row[$key])) {
+                    $rowData[$header] = $row[$key];
+                } else {
+                    // Handle the case where the key doesn't exist in the current row
+                    $rowData[$header] = null;
+                }
+            }
+            $importData[] = $rowData;
+        }
+        return $this->processUpdate($importData);
     }
 
 

@@ -1,6 +1,7 @@
 services:
   # PHP SERVICE
   talent_pool:
+    #hostname: talent_pool
     build:
       context: .
       target: php
@@ -50,6 +51,7 @@ services:
     volumes:
       - ../data/crm-db:/var/lib/mysql
   crm:
+    #hostname: crm
     image: my-php-apache
     ports:
       - 8000:80
