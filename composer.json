@@ -15,8 +15,8 @@
         "spatie/laravel-html": "^3.3",
         "wire-elements/modal": "^2.0",
         "ext-curl": "*",
-        "phpoffice/phpspreadsheet": "1.28.*"
-    },
+        "phpoffice/phpspreadsheet": "1.28.*",
+
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.9",
         "fakerphp/faker": "^1.9.1",
