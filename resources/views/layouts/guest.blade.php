@@ -26,7 +26,9 @@
                 {{ $slot }}
             </div>
 
-            <p style="margin-top:  20px; color: #f06023; margin-left: 300px"> <a href="https://tog.com.vn" target="_blank">Back to TOG</a> </p>
+            <p style="margin-top:  auto; margin-bottom:  200px; color: #f06023; margin-left: auto; margin-right: 200px">
+                <a href="https://tog.com.vn" target="_blank"> >>Back to TOG</a>
+            </p>
         </div>
     </body>
 </html>
