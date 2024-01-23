@@ -21,11 +21,10 @@ class TalentController extends Controller
     protected ProvinceService $provinceService;
     protected VtigerService $vtigerService;
 
-    public function __construct(TalentService $talentService, ProvinceService $provinceService, VtigerService $vtigerService)
+    public function __construct(TalentService $talentService, ProvinceService $provinceService)
     {
         $this->talentService = $talentService;
         $this->provinceService = $provinceService;
-        $this->vtigerService = $vtigerService;
     }
 
     public function index()
@@ -86,18 +85,21 @@ class TalentController extends Controller
 
     public function crm(): JsonResponse
     {
+        $this->vtigerService = new VtigerService();
         $data = $this->vtigerService->fetchData();
         return response()->json($data, 200, [], JSON_PRETTY_PRINT);
     }
 
     public function getFieldList(): JsonResponse
     {
+        $this->vtigerService = new VtigerService();
         $data = $this->vtigerService->getFieldInfo();
         return response()->json($data, 200, [], JSON_PRETTY_PRINT);
     }
 
     public function getModuleQuery($module): JsonResponse
     {
+        $this->vtigerService = new VtigerService();
         $module = trim(ucfirst($module));
         $data = $this->vtigerService->getDataQuery("SELECT * FROM $module");
         return response()->json($data, 200, [], JSON_PRETTY_PRINT);
@@ -105,6 +107,7 @@ class TalentController extends Controller
 
     public function update(): JsonResponse
     {
+        $this->vtigerService = new VtigerService();
         $data = $this->vtigerService->update();
 
         return response()->json($data, 200, [], JSON_PRETTY_PRINT);

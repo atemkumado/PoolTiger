@@ -25,6 +25,8 @@
             <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
                 {{ $slot }}
             </div>
+
+            <p style="margin-top:  20px; color: #f06023; margin-left: 300px"> <a href="https://tog.com.vn" target="_blank">Back to TOG</a> </p>
         </div>
     </body>
 </html>
